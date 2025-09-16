@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #11263c; /* Blue */
+  --color-primary-foreground: #ffffff; /* White */
+  --color-secondary: #f59e0b; /* Gold/Amber */
+  --color-secondary-foreground: #11263c; /* Dark blue */
+  
+  --color-background: #ffffff; /* White */
+  --color-foreground: #11263c; /* Primary color for text */
+  --color-card: #ffffff; /* White */
+  --color-card-foreground: #11263c; /* Primary color for text */
+  --color-popover: #ffffff; /* White */
+  --color-popover-foreground: #11263c; /* Primary color for text */
+  
+  --color-muted: #f3f4f6;
+  --color-muted-foreground: #6b7280;
+  --color-accent: #f59e0b; /* Gold accent same as secondary */
+  --color-accent-foreground: #11263c; /* Primary color for text */
+  
+  --color-destructive: #ef4444;
+  --color-destructive-foreground: #ffffff;
+  
+  --color-border: #e5e7eb;
+  --color-input: #e5e7eb;
+  --color-ring: #3b82f6;
+  
+  --radius: 0.5rem;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+@media (prefers-color-scheme: dark) {
+  @theme {
+    --color-background: #111827; /* Dark blue/gray */
+    --color-foreground: #11263c; /* Primary color for text */
+    --color-card: #1f2937;
+    --color-card-foreground: #ffffff; /* White text on dark card */
+    --color-popover: #1f2937;
+    --color-popover-foreground: #ffffff; /* White text on dark popover */
+    
+    --color-primary: #11263c; /* Blue */
+    --color-primary-foreground: #ffffff; /* White */
+    --color-secondary: #f59e0b; /* Gold */
+    --color-secondary-foreground: #111827; /* Dark background */
+    
+    --color-muted: #374151;
+    --color-muted-foreground: #9ca3af;
+    --color-accent: #f59e0b; /* Gold */
+    --color-accent-foreground: #111827;
+    
+    --color-border: #374151;
+    --color-input: #374151;
+  }
+}

@@ -19,6 +19,7 @@ export interface IStorage {
   // Giving methods
   createGivingRecord(record: InsertGivingRecord): Promise<GivingRecord>;
   getGivingRecords(): Promise<GivingRecord[]>;
+  getGivingRecord(id: string): Promise<GivingRecord | undefined>;
   updateGivingRecordStatus(id: string, status: string, transactionId?: string): Promise<GivingRecord | undefined>;
 }
 

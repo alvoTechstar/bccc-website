@@ -10,7 +10,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Send } from "lucide-react";
-import type { InsertContactMessage } from "@shared/schema";
+import { site } from "@/lib/site";
+import type { InsertContactMessage } from "@/lib/schemas";
 
 export default function ContactForm() {
   const { toast } = useToast();
@@ -26,7 +27,7 @@ export default function ContactForm() {
 
   const createContactMessage = useMutation({
     mutationFn: async (data: InsertContactMessage) => {
-      const response = await apiRequest("POST", "http://localhost:3001/api/contact", data);
+      const response = await apiRequest("POST", `${site.apiBase}/api/contact`, data);
       return response.json();
     },
     onSuccess: () => {

@@ -118,7 +118,7 @@ app.post("/api/giving", async (req, res) => {
     const businessShortCode = process.env.MPESA_PAYBILL_NUMBER!;
     // const lipaNaMpesaOnlinePasskey = process.env.MPESA_PASSKEY!; // This is not used directly here, it's used in mpesaService
     const callbackUrl = `${process.env.YOUR_APP_URL}/api/mpesa/callback`;
-    const transactionDesc = `Donation to ${validatedData.organization || 'our cause'}`;
+    const transactionDesc = `Donation to ${validatedData.givingType || 'our cause'}`;
     const stkTransactionId = `GIV${Date.now()}${record.id.substring(0, 4)}`;
 
     // Generate the password and timestamp (These are generated within mpesaService now)

@@ -1,17 +1,26 @@
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import ContactForm from "@/components/contact/contact-form";
-import { 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Clock, 
+import { churchFacebook, mapsEmbed, youtubeChannelUrl } from "@/lib/site";
+import { DirectionsModal, type Destination } from "@/components/map/directions-modal";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Clock,
   MessageCircle,
   Calendar,
   Users,
   Heart
 } from "lucide-react";
+import { PageHero } from "@/components/motion/page-hero";
+import { Reveal, SectionHeading } from "@/components/motion/reveal";
+import { staggerContainer, staggerDir, staggerItemL, staggerItemR, fromScale } from "@/lib/animations";
 
 export default function Contact() {
+  const [directionsTo, setDirectionsTo] = useState<Destination>(null);
   const contactInfo = [
     {
       icon: MapPin,
@@ -41,43 +50,11 @@ export default function Contact() {
   ];
 
   const serviceTimes = [
-    { day: "Sunday Worship", time: "9:00 AM - 12:00 PM", type: "Main Service" },
+    { day: "First Service (Sun)", time: "8:30 AM", type: "Worship" },
+    { day: "Second Service (Sun)", time: "10:30 AM", type: "Worship" },
     { day: "Wednesday Bible Study", time: "6:00 PM - 8:00 PM", type: "Teaching" },
     { day: "Friday Prayer Night", time: "7:00 PM - 9:00 PM", type: "Prayer" },
     { day: "Saturday Youth Service", time: "2:00 PM - 5:00 PM", type: "Youth" }
-  ];
-
-  const socialLinks = [
-    { 
-      name: "Facebook", 
-      url: "#", 
-      icon: "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z",
-      color: "bg-blue-600 hover:bg-blue-700"
-    },
-    { 
-      name: "Twitter", 
-      url: "#", 
-      icon: "M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z",
-      color: "bg-blue-400 hover:bg-blue-500"
-    },
-    { 
-      name: "Instagram", 
-      url: "#", 
-      icon: "M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.618 5.367 11.986 11.988 11.986s11.987-5.368 11.987-11.986C24.014 5.367 18.635.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.324-1.297C4.198 14.895 3.708 13.744 3.708 12.447s.49-2.448 1.417-3.324c.876-.807 2.027-1.297 3.324-1.297s2.448.49 3.324 1.297c.927.876 1.417 2.027 1.417 3.324s-.49 2.448-1.417 3.244c-.876.807-2.027 1.297-3.324 1.297zm7.83-9.608c-.49 0-.876-.386-.876-.876s.386-.876.876-.876.876.386.876.876-.386.876-.876.876z",
-      color: "bg-pink-600 hover:bg-pink-700"
-    },
-    { 
-      name: "YouTube", 
-      url: "#", 
-      icon: "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z",
-      color: "bg-red-600 hover:bg-red-700"
-    },
-    { 
-      name: "WhatsApp", 
-      url: "#", 
-      icon: "M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488",
-      color: "bg-green-500 hover:bg-green-600"
-    }
   ];
 
   const quickActions = [
@@ -109,18 +86,10 @@ export default function Contact() {
 
   return (
     <div>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-primary/80 py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl lg:text-6xl font-bold font-serif mb-6 text-white">
-            Get In <span className="gold-accent">Touch</span>
-          </h1>
-          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
-            We'd love to hear from you. Reach out to us for prayers, questions, church membership, 
-            or to learn more about joining our church family.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title={<>Get In <span className="gold-accent">Touch</span></>}
+        description="We'd love to hear from you. Reach out to us for prayers, questions, church membership, or to learn more about joining our church family."
+      />
 
       {/* Contact Form and Info */}
       <section className="py-20 bg-background">
@@ -128,88 +97,125 @@ export default function Contact() {
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12">
               {/* Contact Form */}
-              <div>
+              <Reveal from="left">
                 <ContactForm />
-              </div>
+              </Reveal>
 
-              {/* Contact Information */}
-              <div className="space-y-8">
+              {/* Contact Information — editorial navy cards */}
+              <motion.div
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true, margin: "-60px" }}
+                className="space-y-5"
+              >
                 {/* Headquarters Contact */}
-                <Card className="shadow-xl">
-                  <CardContent className="p-8">
-                    <h3 className="text-2xl font-bold text-primary mb-6 font-serif" data-testid="text-headquarters-title">
+                <motion.div variants={staggerItemL}>
+                  <article className="relative overflow-hidden rounded-[2rem] bg-primary p-7 lg:p-8 shadow-xl ring-1 ring-white/10">
+                    <span className="absolute -right-2 -top-4 font-serif text-8xl font-black text-white/[0.07]">01</span>
+                    <h3 className="relative font-serif text-2xl font-bold text-white mb-6" data-testid="text-headquarters-title">
                       Headquarters
                     </h3>
-                    <div className="space-y-4">
+                    <div className="relative space-y-4">
                       {contactInfo.map((info, index) => (
-                        <div key={index} className="flex items-start">
-                          <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center mr-4 mt-1">
-                            <info.icon className="text-primary" size={20} />
+                        <Reveal key={index} delay={index * 0.07} y={14}>
+                          <div className="flex items-start group">
+                            <motion.div
+                              whileHover={{ scale: 1.12, rotate: -8 }}
+                              className="w-12 h-12 gold-surface rounded-2xl flex items-center justify-center mr-4 mt-0.5 shadow shrink-0"
+                            >
+                              <info.icon className="text-primary" size={20} />
+                            </motion.div>
+                            <div>
+                              <h4 className="font-bold text-white mb-1" data-testid={`text-contact-${index}-title`}>
+                                {info.title}
+                              </h4>
+                              {info.details.map((detail, detailIndex) => (
+                                <p key={detailIndex} className="text-white/65 text-[15px]" data-testid={`text-contact-${index}-detail-${detailIndex}`}>
+                                  {detail}
+                                </p>
+                              ))}
+                            </div>
                           </div>
-                          <div>
-                            <h4 className="font-semibold text-primary mb-1" data-testid={`text-contact-${index}-title`}>
-                              {info.title}
-                            </h4>
-                            {info.details.map((detail, detailIndex) => (
-                              <p key={detailIndex} className="text-muted-foreground" data-testid={`text-contact-${index}-detail-${detailIndex}`}>
-                                {detail}
-                              </p>
-                            ))}
-                          </div>
-                        </div>
+                        </Reveal>
                       ))}
                     </div>
-                  </CardContent>
-                </Card>
+                  </article>
+                </motion.div>
 
                 {/* Service Times */}
-                <Card className="shadow-xl">
-                  <CardContent className="p-8">
-                    <h3 className="text-2xl font-bold text-primary mb-6 font-serif" data-testid="text-service-times-title">
+                <motion.div variants={staggerItemR}>
+                  <article className="relative overflow-hidden rounded-[2rem] bg-primary p-7 lg:p-8 shadow-xl ring-1 ring-white/10">
+                    <span className="absolute -right-2 -top-4 font-serif text-8xl font-black text-white/[0.07]">02</span>
+                    <h3 className="relative font-serif text-2xl font-bold text-white mb-6 flex items-center gap-2.5" data-testid="text-service-times-title">
+                      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/15 text-accent">
+                        <Clock size={20} />
+                      </span>
                       Service Times
                     </h3>
-                    <div className="space-y-4">
+                    <div className="relative space-y-2">
                       {serviceTimes.map((service, index) => (
-                        <div key={index} className="flex justify-between items-center py-2 border-b border-border last:border-b-0">
-                          <div>
-                            <span className="font-medium text-primary" data-testid={`text-service-${index}-day`}>
-                              {service.day}
+                        <Reveal key={index} delay={index * 0.06} y={12}>
+                          <div className="flex justify-between items-center gap-3 py-2.5 px-3.5 rounded-xl border border-white/10 bg-white/[0.06] hover:border-accent/40 transition-colors">
+                            <div>
+                              <span className="font-bold text-white text-[15px]" data-testid={`text-service-${index}-day`}>
+                                {service.day}
+                              </span>
+                              <span className="text-xs text-white/50 ml-2">({service.type})</span>
+                            </div>
+                            <span className="text-accent text-sm font-bold whitespace-nowrap" data-testid={`text-service-${index}-time`}>
+                              {service.time}
                             </span>
-                            <span className="text-sm text-muted-foreground ml-2">({service.type})</span>
                           </div>
-                          <span className="text-muted-foreground" data-testid={`text-service-${index}-time`}>
-                            {service.time}
-                          </span>
-                        </div>
+                        </Reveal>
                       ))}
                     </div>
-                  </CardContent>
-                </Card>
+                  </article>
+                </motion.div>
 
                 {/* Social Media */}
-                <Card className="shadow-xl">
-                  <CardContent className="p-8">
-                    <h3 className="text-2xl font-bold text-primary mb-6 font-serif" data-testid="text-social-media-title">
+                <motion.div variants={fromScale}>
+                  <article className="relative overflow-hidden rounded-[2rem] bg-primary p-7 lg:p-8 shadow-xl ring-1 ring-white/10">
+                    <span className="absolute -right-2 -top-4 font-serif text-8xl font-black text-white/[0.07]">03</span>
+                    <h3 className="relative font-serif text-2xl font-bold text-white mb-2" data-testid="text-social-media-title">
                       Follow Us
                     </h3>
-                    <div className="flex space-x-4">
-                      {socialLinks.map((social, index) => (
-                        <a 
-                          key={index}
-                          href={social.url} 
-                          className={`w-12 h-12 ${social.color} rounded-full flex items-center justify-center transition-colors`}
-                          data-testid={`link-social-${social.name.toLowerCase()}`}
-                          aria-label={social.name}
-                        >
-                          <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                            <path d={social.icon} />
-                          </svg>
-                        </a>
-                      ))}
+                    <p className="relative text-sm text-white/60 mb-5">Daily encouragement, live alerts & testimonies.</p>
+                    <div className="relative flex gap-3">
+                      <motion.a
+                        href={churchFacebook}
+                        target="_blank"
+                        rel="noreferrer"
+                        whileHover={{ scale: 1.06, y: -3 }}
+                        whileTap={{ scale: 0.94 }}
+                        className="flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-[#1877F2] px-5 py-3.5 font-bold text-white shadow-lg"
+                        data-testid="link-social-facebook"
+                        aria-label="Facebook"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        Facebook
+                      </motion.a>
+                      <motion.a
+                        href={youtubeChannelUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        whileHover={{ scale: 1.06, y: -3 }}
+                        whileTap={{ scale: 0.94 }}
+                        className="flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-[#FF0000] px-5 py-3.5 font-bold text-white shadow-lg"
+                        data-testid="link-social-youtube"
+                        aria-label="YouTube"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                        </svg>
+                        YouTube
+                      </motion.a>
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
+                  </article>
+                </motion.div>
+              </motion.div>
             </div>
           </div>
         </div>
@@ -219,36 +225,47 @@ export default function Contact() {
       <section className="py-20 bg-muted">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl lg:text-5xl font-bold font-serif mb-6 text-primary">
-                How Can We <span className="gold-accent">Help?</span>
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Whether you're looking to visit us, join a ministry, request prayer, or need pastoral care, 
-                we're here to support you on your spiritual journey.
-              </p>
-            </div>
+            <SectionHeading
+              eyebrow="We're here"
+              title={<>How Can We <span className="gold-accent">Help?</span></>}
+              description="Whether you're looking to visit us, join a ministry, request prayer, or need pastoral care, we're here to support you on your spiritual journey."
+            />
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div
+              variants={staggerContainer}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, margin: "-60px" }}
+              className="grid md:grid-cols-2 lg:grid-cols-4 gap-6"
+            >
               {quickActions.map((action, index) => (
-                <Card key={index} className="shadow-lg text-center card-hover" data-testid={`card-quick-action-${index}`}>
-                  <CardContent className="p-6">
-                    <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
-                      <action.icon className="text-primary" size={32} />
-                    </div>
-                    <h4 className="text-lg font-bold text-primary mb-2" data-testid={`text-action-title-${index}`}>
+                <motion.div key={index} variants={staggerDir(index + 1)}>
+                  <article
+                    className="group relative overflow-hidden rounded-[1.75rem] bg-primary p-6 text-center h-full ring-1 ring-white/10 hover:ring-accent/50 hover:-translate-y-1.5 transition-all duration-300"
+                    data-testid={`card-quick-action-${index}`}
+                  >
+                    <span className="absolute -right-1 -top-3 font-serif text-6xl font-black text-white/[0.08]">
+                      0{index + 1}
+                    </span>
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: -8 }}
+                      className="relative w-14 h-14 gold-surface rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg"
+                    >
+                      <action.icon className="text-primary" size={28} />
+                    </motion.div>
+                    <h4 className="relative text-lg font-bold text-white mb-1.5" data-testid={`text-action-title-${index}`}>
                       {action.title}
                     </h4>
-                    <p className="text-sm text-muted-foreground mb-4" data-testid={`text-action-description-${index}`}>
+                    <p className="relative text-sm text-white/60 mb-4" data-testid={`text-action-description-${index}`}>
                       {action.description}
                     </p>
-                    <button className="text-accent font-semibold text-sm hover:underline" data-testid={`button-action-${index}`}>
-                      {action.action}
+                    <button className="relative text-accent font-bold text-sm hover:underline group-hover:tracking-wide transition-all" data-testid={`button-action-${index}`}>
+                      {action.action} →
                     </button>
-                  </CardContent>
-                </Card>
+                  </article>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -257,56 +274,105 @@ export default function Contact() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl lg:text-5xl font-bold font-serif mb-6 text-primary">
-                Find <span className="gold-accent">Us</span>
-              </h2>
-              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                Located in the heart of Nakuru at Mawanga Kwa Budaa, our church is easily accessible 
-                and welcomes visitors from all backgrounds.
-              </p>
-            </div>
+            <SectionHeading
+              eyebrow="Visit us"
+              title={<>Find <span className="gold-accent">Us</span></>}
+              description="Located in the heart of Nakuru at Mawanga Kwa Budaa, our church is easily accessible and welcomes visitors from all backgrounds."
+            />
 
-            <Card className="shadow-xl overflow-hidden">
-              <div className="h-96 bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <div className="text-center">
-                  <MapPin className="w-16 h-16 text-accent mx-auto mb-4" />
-                  <h3 className="text-2xl font-bold text-primary mb-2">Interactive Map</h3>
-                  <p className="text-muted-foreground">
-                    Directions to Beautiful Courts Christian Church<br />
-                    Nakuru, Mawanga Kwa Budaa
-                  </p>
+            <Reveal from="scale">
+              <Card className="shadow-xl overflow-hidden card-hover group">
+                <div className="grid md:grid-cols-2">
+                  <div className="min-h-96">
+                    <iframe
+                      src={mapsEmbed}
+                      title="Map — Beautiful Courts Christian Church, Mawanga Kwa Budaa"
+                      className="h-full min-h-96 w-full"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      data-testid="map-headquarters"
+                    />
+                  </div>
+                  <div className="bg-gradient-to-br from-primary to-royal p-8 lg:p-10 flex flex-col justify-center text-white relative overflow-hidden">
+                    <div aria-hidden className="absolute inset-0 african-pattern opacity-60" />
+                    <motion.div
+                      animate={{ y: [0, -8, 0] }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                      className="relative"
+                    >
+                      <MapPin className="w-12 h-12 text-accent mb-4" />
+                      <h3 className="text-2xl font-bold font-serif mb-2">Beautiful Courts Christian Church</h3>
+                      <p className="text-white/75 mb-6">
+                        Nakuru, Mawanga Kwa Budaa<br />
+                        Nakuru County, Kenya
+                      </p>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <Button
+                          className="btn-shine bg-accent text-accent-foreground hover:bg-accent/90 rounded-full"
+                          data-testid="button-map-directions"
+                          onClick={() =>
+                            setDirectionsTo({
+                              name: "BCC Church Headquarters",
+                              query: "Beautiful Courts Christian Church, Mawanga, Kwa Budaa, Nakuru, Kenya",
+                            })
+                          }
+                        >
+                          <MapPin size={18} className="mr-2" /> Get Directions
+                        </Button>
+                        <a href="tel:+254720123456" data-testid="button-map-call">
+                          <Button variant="outline" className="glass-pill text-white rounded-full border-white/30">
+                            <Phone size={18} className="mr-2" /> Call Us
+                          </Button>
+                        </a>
+                      </div>
+                    </motion.div>
+                  </div>
                 </div>
-              </div>
-            </Card>
+              </Card>
+            </Reveal>
           </div>
         </div>
       </section>
 
       {/* Call to Action */}
-      <section className="py-20 bg-gradient-to-br from-primary to-primary/80">
-        <div className="container mx-auto px-4 text-center">
+      <section className="py-20 bg-gradient-to-br from-primary via-primary to-royal relative overflow-hidden">
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <div className="animate-blob absolute bottom-0 left-1/3 h-72 w-72 rounded-full bg-accent/25 blur-3xl" />
+        </div>
+        <div className="relative container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl lg:text-5xl font-bold font-serif mb-6 text-white">
-              Ready to <span className="gold-accent">Connect?</span>
-            </h2>
-            <p className="text-xl text-gray-200 mb-8">
-              Don't hesitate to reach out. Our pastoral team and church family are eager to welcome you 
-              and support you in your faith journey.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-accent text-accent-foreground px-8 py-4 rounded-lg font-semibold hover:bg-accent/90 transition-colors" data-testid="button-schedule-visit">
-                <Calendar className="mr-2 inline" size={20} />
-                Schedule a Visit
-              </button>
-              <button className="border-2 border-accent text-accent px-8 py-4 rounded-lg font-semibold hover:bg-accent hover:text-accent-foreground transition-colors" data-testid="button-emergency-prayer">
-                <Heart className="mr-2 inline" size={20} />
-                Emergency Prayer Line
-              </button>
-            </div>
+            <Reveal from="rotate-l">
+              <h2 className="text-4xl lg:text-5xl font-bold font-serif mb-6 text-white">
+                Ready to <span className="gold-accent">Connect?</span>
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1} from="rotate-r">
+              <p className="text-xl text-gray-200 mb-8">
+                Don't hesitate to reach out. Our pastoral team and church family are eager to welcome you
+                and support you in your faith journey.
+              </p>
+            </Reveal>
+            <Reveal delay={0.18} from="up">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} className="inline-block">
+                  <button className="btn-shine bg-accent text-accent-foreground px-8 py-4 rounded-lg font-semibold hover:bg-accent/90 transition-colors" data-testid="button-schedule-visit">
+                    <Calendar className="mr-2 inline" size={20} />
+                    Schedule a Visit
+                  </button>
+                </motion.span>
+                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} className="inline-block">
+                  <button className="border-2 border-accent text-accent px-8 py-4 rounded-lg font-semibold hover:bg-accent hover:text-accent-foreground transition-colors" data-testid="button-emergency-prayer">
+                    <Heart className="mr-2 inline" size={20} />
+                    Emergency Prayer Line
+                  </button>
+                </motion.span>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
+
+      <DirectionsModal destination={directionsTo} onClose={() => setDirectionsTo(null)} />
     </div>
   );
 }

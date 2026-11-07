@@ -1,17 +1,33 @@
-import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { 
-  Music, 
-  Camera, 
-  Users, 
-  Heart, 
-  Baby, 
+import {
+  Music,
+  Camera,
+  Users,
+  Heart,
+  Baby,
   HandHeart,
   BookOpen,
   Mic,
   Headphones,
   UserCheck
 } from "lucide-react";
+import { PageHero } from "@/components/motion/page-hero";
+import { Reveal, SectionHeading } from "@/components/motion/reveal";
+import { staggerContainer, staggerDir } from "@/lib/animations";
+
+const ministryImages = [
+  "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1511632765486-a01980e01a18?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1593113598332-cd288d649433?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1504052434569-70ad5836ab65?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1478147427282-58a87a120781?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&auto=format&fit=crop&w=900&q=80",
+];
 
 export default function Ministries() {
   const ministries = [
@@ -109,102 +125,103 @@ export default function Ministries() {
 
   return (
     <div>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-primary/80 py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl lg:text-6xl font-bold font-serif mb-6 text-white">
-            Our <span className="gold-accent">Ministries</span>
-          </h1>
-          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
-            Discover the various ways you can grow in faith, serve the community, and use your gifts 
-            to build God's kingdom through our diverse ministry programs.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title={<>Our <span className="gold-accent">Ministries</span></>}
+        description="Discover the various ways you can grow in faith, serve the community, and use your gifts to build God's kingdom through our diverse ministry programs."
+      />
 
       {/* Ministries Grid */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold font-serif mb-6 text-primary">
-              Find Your <span className="gold-accent">Calling</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Every believer has been gifted by God to serve in His kingdom. Explore our ministries 
-              and discover where your passion and God's purpose intersect.
-            </p>
-          </div>
+          <SectionHeading
+            eyebrow="Serve with us"
+            title={<>Find Your <span className="gold-accent">Calling</span></>}
+            description="Every believer has been gifted by God to serve in His kingdom. Explore our ministries and discover where your passion and God's purpose intersect."
+          />
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <motion.div
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-60px" }}
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-5"
+          >
             {ministries.map((ministry, index) => (
-              <Card key={index} className="shadow-lg card-hover" data-testid={`card-ministry-${index}`}>
-                <CardContent className="p-6">
-                  <div className={`w-16 h-16 ${ministry.color} rounded-full flex items-center justify-center mb-4`}>
-                    <ministry.icon className="text-white text-2xl" size={32} />
+              <motion.article
+                key={index}
+                variants={staggerDir(index)}
+                className="media-card group min-h-[480px] flex"
+                data-testid={`card-ministry-${index}`}
+              >
+                <img
+                  src={ministryImages[index % ministryImages.length]}
+                  alt={ministry.title}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                <span className="absolute left-5 top-5 z-[2] rounded-full bg-white/15 border border-white/30 backdrop-blur px-3.5 py-1.5 text-[11px] font-black uppercase tracking-widest text-white">
+                  {ministry.meetingTime}
+                </span>
+                <div className="media-card-body p-6 w-full">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${ministry.color} text-white shadow-lg`}>
+                      <ministry.icon size={22} />
+                    </span>
+                    <h3 className="font-serif text-2xl font-bold text-white leading-tight" data-testid={`text-ministry-title-${index}`}>
+                      {ministry.title}
+                    </h3>
                   </div>
-                  <h3 className="text-xl font-bold text-primary mb-3" data-testid={`text-ministry-title-${index}`}>
-                    {ministry.title}
-                  </h3>
-                  <p className="text-muted-foreground mb-4 text-sm leading-relaxed" data-testid={`text-ministry-description-${index}`}>
+                  <p className="text-white/75 text-sm leading-relaxed line-clamp-3 mb-4" data-testid={`text-ministry-description-${index}`}>
                     {ministry.description}
                   </p>
-                  
-                  <div className="space-y-2 mb-4 text-sm">
-                    <div className="flex justify-between">
-                      <span className="font-medium text-primary">Leader:</span>
-                      <span className="text-muted-foreground" data-testid={`text-ministry-leader-${index}`}>
-                        {ministry.leader}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium text-primary">Meets:</span>
-                      <span className="text-muted-foreground" data-testid={`text-ministry-time-${index}`}>
-                        {ministry.meetingTime}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="font-medium text-primary">Contact:</span>
-                      <span className="text-muted-foreground text-xs" data-testid={`text-ministry-contact-${index}`}>
-                        {ministry.contact}
-                      </span>
-                    </div>
+                  <div className="flex items-center justify-between gap-3 rounded-xl bg-white/10 border border-white/15 backdrop-blur px-4 py-3 text-[13px]">
+                    <span className="text-white/80" data-testid={`text-ministry-leader-${index}`}>
+                      {ministry.leader}
+                    </span>
+                    <span className="text-accent font-bold" data-testid={`button-ministry-join-${index}`}>
+                      Join →
+                    </span>
                   </div>
-                  
-                  <Button 
-                    variant="outline" 
-                    className="w-full border-accent text-accent hover:bg-accent hover:text-accent-foreground"
-                    data-testid={`button-ministry-join-${index}`}
-                  >
-                    Join This Ministry
-                  </Button>
-                </CardContent>
-              </Card>
+                  <span className="sr-only" data-testid={`text-ministry-time-${index}`}>{ministry.meetingTime}</span>
+                  <span className="sr-only" data-testid={`text-ministry-contact-${index}`}>{ministry.contact}</span>
+                </div>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Call to Action */}
-      <section className="py-20 bg-muted">
+      <section className="py-20 bg-muted relative overflow-hidden">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl lg:text-5xl font-bold font-serif mb-6 text-primary">
-              Ready to <span className="gold-accent">Get Involved?</span>
-            </h2>
-            <p className="text-xl text-muted-foreground mb-8">
-              Don't see a ministry that fits your passion? We'd love to help you discover your calling 
-              or even start a new ministry that serves our community's needs.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90" data-testid="button-volunteer">
-                <Heart className="mr-2" size={20} />
-                Volunteer Today
-              </Button>
-              <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground" data-testid="button-ministry-info">
-                <BookOpen className="mr-2" size={20} />
-                Get More Information
-              </Button>
-            </div>
+            <Reveal>
+              <h2 className="text-4xl lg:text-5xl font-bold font-serif mb-6 text-primary">
+                Ready to <span className="gold-accent">Get Involved?</span>
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="text-xl text-muted-foreground mb-8">
+                Don't see a ministry that fits your passion? We'd love to help you discover your calling
+                or even start a new ministry that serves our community's needs.
+              </p>
+            </Reveal>
+            <Reveal delay={0.18}>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} className="inline-block">
+                  <Button size="lg" className="btn-shine bg-accent text-accent-foreground hover:bg-accent/90" data-testid="button-volunteer">
+                    <Heart className="mr-2" size={20} />
+                    Volunteer Today
+                  </Button>
+                </motion.span>
+                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} className="inline-block">
+                  <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground" data-testid="button-ministry-info">
+                    <BookOpen className="mr-2" size={20} />
+                    Get More Information
+                  </Button>
+                </motion.span>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>

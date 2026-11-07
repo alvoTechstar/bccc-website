@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="BCCC logo - crown with globe">
+  <defs>
+    <radialGradient id="globeBase" cx="38%" cy="32%" r="80%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="55%" stop-color="#EDF4FA"/>
+      <stop offset="100%" stop-color="#C9DCEC"/>
+    </radialGradient>
+    <linearGradient id="goldCrown" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF3B0"/>
+      <stop offset="28%" stop-color="#FFD44D"/>
+      <stop offset="58%" stop-color="#EAB308"/>
+      <stop offset="85%" stop-color="#C48A00"/>
+      <stop offset="100%" stop-color="#9A6B00"/>
+    </linearGradient>
+    <linearGradient id="goldBand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFDD55"/>
+      <stop offset="45%" stop-color="#F0B90B"/>
+      <stop offset="100%" stop-color="#B8860B"/>
+    </linearGradient>
+    <clipPath id="globeClip">
+      <circle cx="256" cy="168" r="128"/>
+    </clipPath>
+  </defs>
+
+  <!-- Globe base (transparent background outside) -->
+  <circle cx="256" cy="168" r="128" fill="url(#globeBase)"/>
+  <g clip-path="url(#globeClip)">
+    <!-- Ocean shading -->
+    <ellipse cx="200" cy="120" rx="90" ry="70" fill="#FFFFFF" opacity="0.7"/>
+    <!-- Africa continent (prominent, logo blue) -->
+    <path d="M250 78 L286 86 L304 108 L298 138 L310 162 L296 196 L278 232 L262 262 L244 258 L232 228 L214 200 L196 176 L188 148 L200 118 L222 92 Z" fill="#2F8FD0"/>
+    <!-- Europe blob -->
+    <path d="M262 60 L310 62 L330 82 L318 104 L284 100 L258 82 Z" fill="#2F8FD0" opacity="0.95"/>
+    <!-- Middle East / Arabia -->
+    <path d="M312 116 L342 124 L348 150 L322 162 L306 146 Z" fill="#2F8FD0" opacity="0.9"/>
+    <!-- Southern Africa detail -->
+    <path d="M246 238 L262 262 L250 276 L238 256 Z" fill="#2F8FD0"/>
+    <!-- Grid lines -->
+    <g stroke="#B9CDE1" stroke-width="2" opacity="0.55" fill="none">
+      <ellipse cx="256" cy="168" rx="128" ry="48"/>
+      <ellipse cx="256" cy="168" rx="64" ry="128"/>
+      <ellipse cx="256" cy="168" rx="110" ry="128"/>
+      <line x1="128" y1="168" x2="384" y2="168"/>
+      <line x1="128" y1="120" x2="384" y2="120" opacity="0.6"/>
+      <line x1="128" y1="216" x2="384" y2="216" opacity="0.6"/>
+    </g>
+  </g>
+  <circle cx="256" cy="168" r="128" fill="none" stroke="#D7E4F0" stroke-width="4"/>
+
+  <!-- Crown tips (balls) -->
+  <g fill="url(#goldCrown)" stroke="#9A6B00" stroke-width="3">
+    <circle cx="56" cy="252" r="16"/>
+    <circle cx="156" cy="238" r="14"/>
+    <circle cx="256" cy="232" r="0.1" opacity="0"/>
+    <circle cx="356" cy="238" r="14"/>
+    <circle cx="456" cy="252" r="16"/>
+  </g>
+
+  <!-- Crown body -->
+  <path d="M56 252 L96 340 L156 238 L206 340 L256 250 L306 340 L356 238 L416 340 L456 252 L436 372 L76 372 Z"
+        fill="url(#goldCrown)" stroke="#9A6B00" stroke-width="4" stroke-linejoin="round"/>
+  <!-- Crown inner shading -->
+  <path d="M96 340 L156 238 L206 340 Z" fill="#000000" opacity="0.08"/>
+  <path d="M306 340 L356 238 L416 340 Z" fill="#000000" opacity="0.08"/>
+  <path d="M206 340 L256 250 L306 340 Z" fill="#FFFFFF" opacity="0.18"/>
+
+  <!-- Band -->
+  <rect x="70" y="368" width="372" height="92" rx="26" fill="url(#goldBand)" stroke="#9A6B00" stroke-width="4"/>
+  <rect x="70" y="368" width="372" height="20" rx="10" fill="#FFFFFF" opacity="0.35"/>
+
+  <!-- BCCC letters (royal blue from logo) -->
+  <g font-family="Arial, Helvetica, sans-serif" font-weight="900" font-size="62" fill="#1B22D2" text-anchor="middle" letter-spacing="2">
+    <text x="140" y="434">B</text>
+    <text x="235" y="434">C</text>
+    <text x="325" y="434">C</text>
+    <text x="415" y="434">C</text>
+  </g>
+  <!-- Band rivets -->
+  <g fill="#FFF3B0" stroke="#9A6B00" stroke-width="2">
+    <circle cx="102" cy="414" r="6"/>
+    <circle cx="256" cy="414" r="0.1" opacity="0"/>
+    <circle cx="410" cy="414" r="6"/>
+  </g>
+</svg>

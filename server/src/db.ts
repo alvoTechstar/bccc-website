@@ -11,11 +11,17 @@ if (!MONGO_URI) {
   process.exit(1);
 }
 
-export async function connectToDb() {
+// Returns native Db (typed as any to avoid version mismatch between
+// `mongodb` and mongoose's bundled `mongodb` types).
+export async function connectToDb(): Promise<any> {
   try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(MONGO_URI as string);
+    const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error("mongoose.connection.db is undefined after connect");
+    }
     console.log("Connected to MongoDB successfully using Mongoose.");
-    return mongoose.connection.db; // Return the Db object
+    return db; // Return the Db object
   } catch (error) {
     console.error("Could not connect to MongoDB:", error);
     throw error;

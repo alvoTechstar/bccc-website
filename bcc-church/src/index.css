@@ -1,56 +1,386 @@
 @import "tailwindcss";
 
+/*
+ * BCCC theme — sampled from logo:
+ *  crown gold #EAB308 (gradient #FFE27A → #C48A00)
+ *  BCCC royal blue #2330D6 / deep variant #1B22D2
+ *  globe sky #2F8FD0
+ *  tagline ember red #C1272D (sparingly)
+ *  navy ink #0E2A52 (evolved from #11263c)
+ */
+
 @theme {
-  --color-primary: #11263c; /* Blue */
-  --color-primary-foreground: #ffffff; /* White */
-  --color-secondary: #f59e0b; /* Gold/Amber */
-  --color-secondary-foreground: #11263c; /* Dark blue */
-  
-  --color-background: #ffffff; /* White */
-  --color-foreground: #11263c; /* Primary color for text */
-  --color-card: #ffffff; /* White */
-  --color-card-foreground: #11263c; /* Primary color for text */
-  --color-popover: #ffffff; /* White */
-  --color-popover-foreground: #11263c; /* Primary color for text */
-  
-  --color-muted: #f3f4f6;
-  --color-muted-foreground: #6b7280;
-  --color-accent: #f59e0b; /* Gold accent same as secondary */
-  --color-accent-foreground: #11263c; /* Primary color for text */
-  
-  --color-destructive: #ef4444;
+  --color-primary: #0e2a52; /* Navy ink from globe shadow */
+  --color-primary-foreground: #ffffff;
+
+  --color-royal: #2330d6; /* BCCC letters */
+  --color-royal-foreground: #ffffff;
+
+  --color-globe: #2f8fd0; /* Globe blue */
+  --color-globe-foreground: #ffffff;
+
+  --color-secondary: #eab308; /* Crown gold */
+  --color-secondary-foreground: #0e2a52;
+
+  --color-background: #ffffff;
+  --color-foreground: #0e2a52;
+  --color-card: #ffffff;
+  --color-card-foreground: #0e2a52;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0e2a52;
+
+  --color-muted: #f4f6fa;
+  --color-muted-foreground: #5b6b82;
+  --color-accent: #eab308; /* Crown gold accent */
+  --color-accent-foreground: #0e2a52;
+
+  --color-ember: #c1272d; /* Tagline red — use sparingly */
+  --color-ember-foreground: #ffffff;
+
+  --color-destructive: #c1272d;
   --color-destructive-foreground: #ffffff;
-  
-  --color-border: #e5e7eb;
-  --color-input: #e5e7eb;
-  --color-ring: #3b82f6;
-  
+
+  --color-border: #e2e8f2;
+  --color-input: #e2e8f2;
+  --color-ring: #2f8fd0;
+
+  --font-serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
   --radius: 0.5rem;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
-  @theme {
-    --color-background: #111827; /* Dark blue/gray */
-    --color-foreground: #11263c; /* Primary color for text */
-    --color-card: #1f2937;
-    --color-card-foreground: #ffffff; /* White text on dark card */
-    --color-popover: #1f2937;
-    --color-popover-foreground: #ffffff; /* White text on dark popover */
-    
-    --color-primary: #11263c; /* Blue */
-    --color-primary-foreground: #ffffff; /* White */
-    --color-secondary: #f59e0b; /* Gold */
-    --color-secondary-foreground: #111827; /* Dark background */
-    
-    --color-muted: #374151;
-    --color-muted-foreground: #9ca3af;
-    --color-accent: #f59e0b; /* Gold */
-    --color-accent-foreground: #111827;
-    
-    --color-border: #374151;
-    --color-input: #374151;
+/* Light-only theme — dark mode removed by design. */
+
+/* ---------- Logo-derived utilities ---------- */
+
+.gold-accent {
+  background: linear-gradient(100deg, #ffe27a 0%, #eab308 45%, #c48a00 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gold-surface {
+  background: linear-gradient(135deg, #ffe27a 0%, #f0b90b 50%, #b8860b 100%);
+}
+
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -18px rgba(14, 42, 82, 0.35);
+  border-color: rgba(234, 179, 8, 0.45);
+}
+
+.african-pattern {
+  position: relative;
+  isolation: isolate;
+}
+
+.african-pattern::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23EAB308' stroke-width='2'%3E%3Ccircle cx='36' cy='36' r='14'/%3E%3Cpath d='M36 8v12M36 52v12M8 36h12M52 36h12'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 72px 72px;
+}
+
+/* ---------- Animations ---------- */
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.7s ease both;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.7s ease both;
+}
+
+.animate-float {
+  animation: float-y 5s ease-in-out infinite;
+}
+
+/* ---------- BCC modern design system ---------- */
+
+/* Desktop nav hover — pill lights up + lifts before active state takes over */
+.nav-link {
+  transition: background-color 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.nav-link:active {
+  transform: scale(0.95);
+}
+
+/* Drawer links — arrow slides on hover */
+.drawer-link {
+  transition: background-color 0.25s ease, transform 0.25s ease;
+}
+
+.drawer-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.drawer-link:hover .drawer-arrow {
+  transform: translateX(5px);
+  color: var(--color-accent);
+}
+
+.drawer-arrow {
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.drawer-link:active {
+  transform: scale(0.98);
+}
+
+.display-hero {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  line-height: 0.98;
+  letter-spacing: -0.02em;
+  font-size: clamp(3rem, 8vw, 6.5rem);
+}
+
+.display-section {
+  font-family: var(--font-serif);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 2.2rem;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+/* Image-first media card — replaces predictable icon-circle cards */
+.media-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  isolation: isolate;
+}
+
+.media-card img {
+  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.media-card:hover img {
+  transform: scale(1.08);
+}
+
+.media-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(10, 25, 48, 0) 30%, rgba(10, 25, 48, 0.55) 65%, rgba(10, 25, 48, 0.9) 100%);
+  pointer-events: none;
+}
+
+.media-card-body {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 2;
+}
+
+.media-arrow {
+  transition: transform 0.35s ease, background 0.35s ease;
+}
+
+.media-card:hover .media-arrow {
+  transform: translate(4px, -4px);
+}
+
+/* Duotone worship imagery */
+.duotone {
+  filter: saturate(1.05) contrast(1.04);
+}
+
+.duotone-wrap {
+  position: relative;
+}
+
+.duotone-wrap::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(120deg, rgba(35, 48, 214, 0.35), rgba(234, 179, 8, 0.2));
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+/* Horizontal media rail (mobile scroll, desktop grid) */
+.media-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 82%;
+  gap: 1.25rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 0.5rem;
+  scrollbar-width: none;
+}
+
+.media-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.media-rail > * {
+  scroll-snap-align: start;
+}
+
+@media (min-width: 768px) {
+  .media-rail {
+    grid-auto-flow: row;
+    grid-auto-columns: unset;
+    grid-template-columns: repeat(3, 1fr);
+    overflow: visible;
+  }
+}
+
+/* Frosted service-time pill */
+.glass-pill {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Bento feature tile */
+.bento {
+  border-radius: 1.5rem;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ---------- Website-grade motion ---------- */
+
+@keyframes marquee-x {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes kenburns {
+  0% { transform: scale(1) translateY(0); }
+  100% { transform: scale(1.12) translateY(-12px); }
+}
+
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(24px, -28px) scale(1.08); }
+  66% { transform: translate(-20px, 18px) scale(0.95); }
+}
+
+@keyframes shine-sweep {
+  from { transform: translateX(-120%) skewX(-18deg); }
+  to { transform: translateX(240%) skewX(-18deg); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(0.8); }
+}
+
+@keyframes scroll-dot {
+  0% { opacity: 1; transform: translateY(0); }
+  70% { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 0; transform: translateY(0); }
+}
+
+.marquee-track {
+  animation: marquee-x 28s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.animate-kenburns {
+  animation: kenburns 14s ease-in-out infinite alternate;
+}
+
+.animate-blob {
+  animation: blob-drift 12s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2.2s ease-in-out infinite;
+}
+
+.animate-scroll-dot {
+  animation: scroll-dot 1.8s ease-out infinite;
+}
+
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  animation: shine-sweep 3.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-float,
+  .animate-kenburns,
+  .animate-blob,
+  .animate-pulse-soft,
+  .animate-scroll-dot,
+  .marquee-track,
+  .btn-shine::after,
+  .card-hover {
+    animation: none;
+    transition: none;
   }
 }

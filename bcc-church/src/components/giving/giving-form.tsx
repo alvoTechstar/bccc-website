@@ -9,7 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Heart, Shield } from "lucide-react";
-import type { InsertGivingRecord } from "@shared/schema";
+import { site } from "@/lib/site";
+import type { InsertGivingRecord } from "@/lib/schemas";
 
 export default function GivingForm() {
   const { toast } = useToast();
@@ -22,7 +23,7 @@ export default function GivingForm() {
 
   const createGivingRecord = useMutation({
     mutationFn: async (data: InsertGivingRecord) => {
-      const response = await apiRequest("POST", "http://localhost:3001/api/giving", data);
+      const response = await apiRequest("POST", `${site.apiBase}/api/giving`, data);
       return response.json();
     },
     onSuccess: () => {

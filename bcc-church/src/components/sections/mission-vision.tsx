@@ -1,44 +1,118 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Target, Eye } from "lucide-react";
+import { motion } from "framer-motion";
+import { Link } from "wouter";
+import { ArrowRight, Compass, Telescope } from "lucide-react";
+import { Reveal, Marquee } from "@/components/motion/reveal";
+import { fallbackPhotos, photos, photoProps } from "@/lib/site";
 
 export default function MissionVision() {
   return (
-    <section className="py-20 bg-primary-foreground">
-      <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-12">
-          <Card className="bg-white/95 backdrop-blur shadow-xl card-hover">
-            <CardContent className="p-8">
-              <div className="flex items-center mb-6">
-                <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mr-4">
-                  <Target className="text-primary text-2xl" size={32} />
-                </div>
-                <h3 className="text-3xl font-bold text-primary font-serif" data-testid="text-mission-title">Our Mission</h3>
-              </div>
-              <p className="text-lg text-muted-foreground leading-relaxed" data-testid="text-mission-content">
-                To evangelize the world through the power of the Holy Spirit, establishing strong Christian communities 
-                that worship God in spirit and truth, while demonstrating Christ's love through practical service to humanity. 
-                We are committed to raising disciples who will impact their communities and nations for the Kingdom of God.
-              </p>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-white/95 backdrop-blur shadow-xl card-hover">
-            <CardContent className="p-8">
-              <div className="flex items-center mb-6">
-                <div className="w-16 h-16 bg-accent rounded-full flex items-center justify-center mr-4">
-                  <Eye className="text-primary text-2xl" size={32} />
-                </div>
-                <h3 className="text-3xl font-bold text-primary font-serif" data-testid="text-vision-title">Our Vision</h3>
-              </div>
-              <p className="text-lg text-muted-foreground leading-relaxed" data-testid="text-vision-content">
-                To be a thriving, multicultural church community that transforms lives across Kenya and East Africa. 
-                We envision established churches in every major city and town, equipped with passionate leaders who 
-                will plant more churches, establish training centers, and create sustainable community development programs 
-                that reflect God's love and justice.
-              </p>
-            </CardContent>
-          </Card>
+    <section className="relative py-20 lg:py-28 bg-primary overflow-hidden african-pattern">
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="animate-blob absolute top-0 left-1/4 h-80 w-80 rounded-full bg-royal/50 blur-3xl" />
+        <div className="animate-blob absolute bottom-0 right-1/4 h-80 w-80 rounded-full bg-accent/20 blur-3xl" style={{ animationDelay: "-6s" }} />
+      </div>
+
+      <div className="relative container mx-auto px-4">
+        <div className="grid lg:grid-cols-[1fr_1.2fr] gap-10 items-end mb-14">
+          <Reveal from="left">
+            <p className="eyebrow text-accent mb-4">Why we exist</p>
+            <h2 className="display-section text-white">
+              Sent on <span className="gold-accent">mission.</span>
+              <br />
+              Moved by <span className="gold-accent">vision.</span>
+            </h2>
+          </Reveal>
+          <Reveal from="right" delay={0.12}>
+            <p className="text-lg text-white/70 leading-relaxed max-w-xl lg:ml-auto">
+              Two sentences carry this house — what God sent us to do every day,
+              and what He showed us we are becoming. Everything else is details.
+            </p>
+          </Reveal>
         </div>
+
+        <div className="grid lg:grid-cols-2 gap-5">
+          {/* Mission — photo card */}
+          <motion.article
+            initial={{ opacity: 0, x: -64, rotate: -1.5 }}
+            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="media-card group min-h-[480px]"
+          >
+            <img
+              {...photoProps(photos.congregation, fallbackPhotos.congregation, "BCC Church congregation in worship")}
+              loading="lazy"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+            <span className="absolute left-6 top-6 z-[2] font-serif text-7xl font-black text-white/25">01</span>
+            <span className="absolute right-6 top-6 z-[2] flex h-13 w-13 items-center justify-center rounded-2xl bg-accent p-3 text-primary shadow-xl">
+              <Compass size={26} />
+            </span>
+            <div className="media-card-body p-7 lg:p-9">
+              <p className="eyebrow text-accent mb-3">Our mission — today</p>
+              <h3 className="font-serif text-3xl lg:text-4xl font-bold text-white leading-tight mb-3" data-testid="text-mission-title">
+                To evangelize the world, disciple nations.
+              </h3>
+              <p className="text-white/75 leading-relaxed max-w-lg" data-testid="text-mission-content">
+                To evangelize the world through the power of the Holy Spirit, establishing strong
+                Christian communities that worship God in spirit and truth — demonstrating Christ's
+                love through practical service to humanity.
+              </p>
+              <p className="mt-4 text-xs font-bold uppercase tracking-[0.25em] text-accent/80">Matthew 28:19 · Mark 16:15</p>
+            </div>
+          </motion.article>
+
+          {/* Vision — gold statement card */}
+          <motion.article
+            initial={{ opacity: 0, x: 64, rotate: 1.5 }}
+            whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="bento gold-surface p-7 lg:p-9 min-h-[480px] flex flex-col justify-between group overflow-hidden"
+          >
+            <div aria-hidden className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/25 blur-3xl" />
+            <div className="flex items-start justify-between">
+              <span className="font-serif text-7xl font-black text-primary/15">02</span>
+              <span className="flex h-13 w-13 items-center justify-center rounded-2xl bg-primary p-3 text-accent shadow-xl transition-transform group-hover:rotate-12">
+                <Telescope size={26} />
+              </span>
+            </div>
+            <div className="relative">
+              <p className="eyebrow text-primary/70 mb-3">Our vision — tomorrow</p>
+              <h3 className="font-serif text-3xl lg:text-4xl font-bold text-primary leading-tight mb-3" data-testid="text-vision-title">
+                A church in every city. Christ in every home.
+              </h3>
+              <p className="text-primary/75 leading-relaxed max-w-lg" data-testid="text-vision-content">
+                To be a thriving, multicultural church community transforming lives across Kenya and
+                East Africa — established churches in every major city and town, training centers,
+                and community programs that reflect God's love and justice.
+              </p>
+              <p className="mt-4 text-xs font-bold uppercase tracking-[0.25em] text-primary/60">Habakkuk 2:14 · Acts 1:8</p>
+              <Link
+                href="/about"
+                className="mt-6 inline-flex items-center gap-2 font-bold text-primary hover:gap-3.5 transition-all"
+              >
+                Read our full story <ArrowRight size={18} />
+              </Link>
+            </div>
+          </motion.article>
+        </div>
+      </div>
+
+      {/* Verse ticker */}
+      <div className="relative mt-14 border-y border-white/10 bg-black/25 py-3.5">
+        <Marquee>
+          {Array.from({ length: 6 }).flatMap((_, k) => [
+            <span key={`a-${k}`} className="text-[13px] font-bold uppercase tracking-[0.3em] text-white/70">
+              Go into all the world — Mark 16:15
+            </span>,
+            <span key={`b-${k}`} className="text-accent/60">✦</span>,
+            <span key={`c-${k}`} className="text-[13px] font-bold uppercase tracking-[0.3em] text-white/70">
+              The earth shall be filled with His glory — Hab. 2:14
+            </span>,
+            <span key={`d-${k}`} className="text-accent/60">✦</span>,
+          ])}
+        </Marquee>
       </div>
     </section>
   );

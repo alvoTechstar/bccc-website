@@ -9,7 +9,7 @@ import {
   InsertContactMessage,
   GivingRecord,
   InsertGivingRecord
-} from "@shared/schema";
+} from "./schema";
 import { connectToDb } from "./db"; // Assuming this correctly returns a Promise<Db>
 import { randomUUID } from "crypto";
 
@@ -144,6 +144,12 @@ export class MongoStorage implements IStorage {
   async getGivingRecords(): Promise<GivingRecord[]> {
     await this.ensureInitialized();
     return await this.givingRecords.find().toArray();
+  }
+
+  async getGivingRecord(id: string): Promise<GivingRecord | undefined> {
+    await this.ensureInitialized();
+    const record = await this.givingRecords.findOne({ id });
+    return record ?? undefined;
   }
 
   async updateGivingRecordStatus(id: string, status: string, transactionId?: string): Promise<GivingRecord | undefined> {

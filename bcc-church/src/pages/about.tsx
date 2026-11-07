@@ -1,5 +1,11 @@
+import { motion } from "framer-motion";
+import { Link } from "wouter";
 import { Card, CardContent } from "../components/ui/card";
-import { Heart, Pill, Users, Globe } from "lucide-react";
+import { Heart, Pill, Users, Globe, ArrowRight } from "lucide-react";
+import { PageHero } from "@/components/motion/page-hero";
+import { Reveal, SectionHeading, Counter } from "@/components/motion/reveal";
+import { staggerContainer, staggerDir } from "@/lib/animations";
+import { fallbackPhotos, photos, photoProps } from "@/lib/site";
 
 export default function About() {
   const coreValues = [
@@ -29,49 +35,19 @@ export default function About() {
     }
   ];
 
-  const leaders = [
-    {
-      name: "Bishop JB Tajeu",
-      role: "Senior Pastor & Visionary",
-      description: "Leading BCC Church with wisdom and passion for over a decade.",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=400"
-    },
-    {
-      name: "Pastor David Seur",
-      role: "Narok Region Leader",
-      description: "Oversees five branch churches across Narok County.",
-      image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=400"
-    },
-    {
-      name: "Pastor Samuel Kirui",
-      role: "BCC Ololulunga Pastor",
-      description: "Passionate about community outreach and youth development.",
-      image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=400&h=400"
-    }
-  ];
-
   return (
-    
     <div>
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-primary/80 py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl lg:text-6xl font-bold font-serif mb-6 text-white">
-            About <span className="gold-accent">BCC Church</span>
-          </h1>
-          <p className="text-xl text-gray-200 max-w-3xl mx-auto">
-            Discover our story, meet our leadership team, and learn about the values that guide our mission 
-            to transform lives across Kenya through the power of Jesus Christ.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        title={<>About <span className="gold-accent">BCC Church</span></>}
+        description="Discover our story, meet our leadership team, and learn about the values that guide our mission to transform lives across Kenya through the power of Jesus Christ."
+      />
 
       {/* Our Story */}
-      <section className="py-20 bg-background">
+      <section className="py-20 bg-background overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <div className="grid lg:grid-cols-2 gap-12 items-center mb-16">
-              <div>
+              <Reveal>
                 <h3 className="text-3xl font-bold text-primary mb-6 font-serif" data-testid="text-our-story-title">Our Story</h3>
                 <div className="space-y-4 text-lg text-muted-foreground leading-relaxed">
                   <p data-testid="text-story-paragraph-1">
@@ -84,123 +60,137 @@ export default function About() {
                     Today, BCC Church stands as a beacon of hope, offering not just spiritual nourishment but also practical support to families, youth, and communities throughout Kenya.
                   </p>
                 </div>
-              </div>
-              <div className="relative">
-                <img 
-                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600" 
-                  alt="African church community gathering and fellowship" 
-                  className="rounded-2xl shadow-xl"
-                  data-testid="img-church-community"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent rounded-2xl"></div>
-              </div>
+              </Reveal>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.94, x: 40 }}
+                whileInView={{ opacity: 1, scale: 1, x: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className="relative group"
+              >
+                <div className="overflow-hidden rounded-2xl shadow-xl">
+                  <img
+                    {...photoProps(photos.sanctuaryRender, fallbackPhotos.sanctuaryRender, "Artist's impression of the coming BCC sanctuary")}
+                    loading="lazy"
+                    className="rounded-2xl transition-transform duration-700 group-hover:scale-105"
+                    data-testid="img-church-community"
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-primary/20 to-transparent rounded-2xl pointer-events-none"></div>
+              </motion.div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Leadership Team */}
-      <section className="py-20 bg-muted">
+      {/* Leadership teaser — full team lives at /about/leadership */}
+      <section className="py-20 bg-muted overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold font-serif mb-6 text-primary">
-              Our <span className="gold-accent">Leadership Team</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Meet the dedicated leaders who guide our church with wisdom, passion, and unwavering faith.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {leaders.map((leader, index) => (
-              <Card key={index} className="shadow-xl text-center" data-testid={`card-leader-${index}`}>
-                <CardContent className="p-8">
-                  <img 
-                    src={leader.image} 
-                    alt={leader.name} 
-                    className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-                    data-testid={`img-leader-${index}`}
-                  />
-                  <h4 className="text-xl font-bold text-primary mb-1" data-testid={`text-leader-name-${index}`}>
-                    {leader.name}
-                  </h4>
-                  <p className="text-accent font-semibold mb-3" data-testid={`text-leader-role-${index}`}>
-                    {leader.role}
-                  </p>
-                  <p className="text-sm text-muted-foreground" data-testid={`text-leader-description-${index}`}>
-                    {leader.description}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          <Reveal from="left">
+            <div className="grid md:grid-cols-[auto_1fr_auto] items-center gap-6 rounded-3xl bg-primary p-6 lg:p-8 shadow-xl">
+              <img
+                {...photoProps(photos.bishop, fallbackPhotos.bishop, "Bishop JB Tajeu")}
+                loading="lazy"
+                className="h-24 w-24 rounded-full object-cover object-top ring-4 ring-accent/50"
+                data-testid="img-leader-teaser"
+              />
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-[0.28em] text-accent">Leadership</p>
+                <h2 className="font-serif text-2xl lg:text-3xl font-bold text-white mt-1">
+                  Led by Bishop JB Tajeu & a faithful pastoral team
+                </h2>
+                <p className="text-white/70 mt-1">Meet the shepherds who carry the vision.</p>
+              </div>
+              <Link
+                href="/about/leadership"
+                className="group inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3.5 font-bold text-primary hover:bg-accent/90 transition-colors shrink-0"
+                data-testid="link-leadership-team"
+              >
+                Meet the team
+                <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </Reveal>
         </div>
       </section>
 
       {/* Core Values */}
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold font-serif mb-6 text-primary">
-              Our <span className="gold-accent">Core Values</span>
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              The foundational principles that guide everything we do as a church community.
-            </p>
-          </div>
+          <SectionHeading
+            eyebrow="What guides us"
+            title={<>Our <span className="gold-accent">Core Values</span></>}
+            description="The foundational principles that guide everything we do as a church community."
+          />
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <motion.div
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-80px" }}
+            className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5"
+          >
             {coreValues.map((value, index) => (
-              <Card key={index} className="shadow-lg text-center card-hover" data-testid={`card-value-${index}`}>
-                <CardContent className="p-6">
-                  <div className={`w-16 h-16 ${value.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
-                    <value.icon className="text-white text-2xl" size={32} />
-                  </div>
-                  <h4 className="text-lg font-bold text-primary mb-2" data-testid={`text-value-title-${index}`}>
+              <motion.div
+                key={index}
+                variants={staggerDir(index)}
+                whileHover={{ y: -6 }}
+                className="bento bg-primary p-7 text-white min-h-[260px] flex flex-col justify-between group overflow-hidden"
+                data-testid={`card-value-${index}`}
+              >
+                <div aria-hidden className={`absolute -right-10 -top-10 h-40 w-40 rounded-full ${value.color} opacity-25 blur-2xl transition-opacity group-hover:opacity-50`} />
+                <value.icon className="text-accent" size={36} />
+                <div className="relative">
+                  <p className="font-serif text-4xl font-black gold-accent">0{index + 1}</p>
+                  <h4 className="text-xl font-bold mt-1" data-testid={`text-value-title-${index}`}>
                     {value.title}
                   </h4>
-                  <p className="text-sm text-muted-foreground" data-testid={`text-value-description-${index}`}>
+                  <p className="text-sm text-white/70 mt-1.5 leading-relaxed" data-testid={`text-value-description-${index}`}>
                     {value.description}
                   </p>
-                </CardContent>
-              </Card>
+                </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Statistics */}
-      <section className="py-20 bg-gradient-to-br from-primary to-primary/80">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-bold font-serif mb-6 text-white">
-              Our <span className="gold-accent">Impact</span>
-            </h2>
-            <p className="text-xl text-gray-200 max-w-3xl mx-auto">
-              See how God is working through BCC Church to transform lives and communities across Kenya.
-            </p>
-          </div>
+      <section className="py-20 bg-gradient-to-br from-primary via-primary to-royal relative overflow-hidden">
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <div className="animate-blob absolute top-0 left-1/3 h-64 w-64 rounded-full bg-accent/20 blur-3xl" />
+        </div>
+        <div className="relative container mx-auto px-4">
+          <SectionHeading
+            eyebrow="Impact"
+            title={<span className="text-white">Our <span className="gold-accent">Impact</span></span>}
+            description="See how God is working through BCC Church to transform lives and communities across Kenya."
+          />
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-white/10 backdrop-blur border-white/20 text-center text-white" data-testid="card-stat-families">
-              <CardContent className="p-6">
-                <div className="text-4xl font-bold text-accent mb-2" data-testid="text-stat-families-number">500+</div>
-                <p className="text-gray-200" data-testid="text-stat-families-label">Families Supported Monthly</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/10 backdrop-blur border-white/20 text-center text-white" data-testid="card-stat-branches">
-              <CardContent className="p-6">
-                <div className="text-4xl font-bold text-accent mb-2" data-testid="text-stat-branches-number">12</div>
-                <p className="text-gray-200" data-testid="text-stat-branches-label">Church Branches Established</p>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/10 backdrop-blur border-white/20 text-center text-white" data-testid="card-stat-lives">
-              <CardContent className="p-6">
-                <div className="text-4xl font-bold text-accent mb-2" data-testid="text-stat-lives-number">2000+</div>
-                <p className="text-gray-200" data-testid="text-stat-lives-label">Lives Transformed</p>
-              </CardContent>
-            </Card>
-          </div>
+          <motion.div
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: true, margin: "-80px" }}
+            className="grid md:grid-cols-3 gap-8"
+          >
+            {[
+              { n: 500, s: "+", label: "Families Supported Monthly", id: "families" },
+              { n: 12, s: "", label: "Church Branches Established", id: "branches" },
+              { n: 2000, s: "+", label: "Lives Transformed", id: "lives" },
+            ].map((stat, i) => (
+              <motion.div key={stat.id} variants={staggerDir(i)}>
+                <Card className="bg-white/10 backdrop-blur border-white/20 text-center text-white card-hover" data-testid={`card-stat-${stat.id}`}>
+                  <CardContent className="p-6">
+                    <div className="text-4xl font-bold text-accent mb-2 font-serif" data-testid={`text-stat-${stat.id}-number`}>
+                      <Counter to={stat.n} suffix={stat.s} />
+                    </div>
+                    <p className="text-gray-200" data-testid={`text-stat-${stat.id}-label`}>{stat.label}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
     </div>

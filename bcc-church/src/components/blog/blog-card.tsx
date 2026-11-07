@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, ArrowRight } from "lucide-react";
-import type { BlogPost } from "@shared/schema";
+import type { BlogPost } from "@/lib/schemas";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -21,13 +21,14 @@ export default function BlogCard({ post, featured = false }: BlogCardProps) {
 
   if (featured) {
     return (
-      <Card className="shadow-xl overflow-hidden mb-12">
+      <Card className="shadow-xl overflow-hidden mb-12 card-hover group">
         <div className="grid lg:grid-cols-2 gap-0">
-          <div className="relative">
-            <img 
-              src={post.imageUrl || 'https://images.unsplash.com/photo-1507692049790-de58290a4334?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=500'} 
+          <div className="relative overflow-hidden">
+            <img
+              src={post.imageUrl || 'https://images.unsplash.com/photo-1507692049790-de58290a4334?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=500'}
               alt={post.title}
-              className="w-full h-80 lg:h-full object-cover"
+              loading="lazy"
+              className="w-full h-80 lg:h-full object-cover transition-transform duration-700 group-hover:scale-105"
               data-testid={`img-featured-post-${post.id}`}
             />
             <div className="absolute top-4 left-4">
@@ -75,13 +76,16 @@ export default function BlogCard({ post, featured = false }: BlogCardProps) {
   }
 
   return (
-    <Card className="shadow-lg overflow-hidden card-hover" data-testid={`card-post-${post.id}`}>
-      <img 
-        src={post.imageUrl || 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=300'} 
-        alt={post.title}
-        className="w-full h-48 object-cover"
-        data-testid={`img-post-${post.id}`}
-      />
+    <Card className="shadow-lg overflow-hidden card-hover group h-full" data-testid={`card-post-${post.id}`}>
+      <div className="overflow-hidden">
+        <img
+          src={post.imageUrl || 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=300'}
+          alt={post.title}
+          loading="lazy"
+          className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-110"
+          data-testid={`img-post-${post.id}`}
+        />
+      </div>
       <CardContent className="p-6">
         <div className="flex items-center mb-3">
           <Badge variant="outline" className="text-accent border-accent" data-testid={`badge-category-${post.id}`}>

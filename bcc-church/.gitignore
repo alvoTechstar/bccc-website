@@ -5,14 +5,14 @@
 /.pnp
 .pnp.js
 
-# testing
-/coverage
-
-# production
+# builds
+/dist
 /build
+/.vite
+*.tsbuildinfo
 
-# misc
-.DS_Store
+# env (keep .env.example tracked, never commit real .env)
+.env
 .env.local
 .env.development.local
 .env.test.local

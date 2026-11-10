@@ -7,10 +7,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { Heart, Shield } from "lucide-react";
-import { site } from "@/lib/site";
 import type { InsertGivingRecord } from "@/lib/schemas";
+import { api, type GivingCreateResponse } from "@/lib/api";
 
 export default function GivingForm() {
   const { toast } = useToast();
@@ -20,16 +19,49 @@ export default function GivingForm() {
     phoneNumber: "",
     message: ""
   });
+  const [lastGivingId, setLastGivingId] = useState<string | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
+
+  const pollStatus = async (givingId: string) => {
+    // Poll the backend for up to ~60s; the M-Pesa callback usually lands in seconds.
+    for (let i = 0; i < 12; i++) {
+      await new Promise((r) => setTimeout(r, 5000));
+      try {
+        const s = await api.getGivingStatus(givingId);
+        setPaymentStatus(s.status);
+        if (s.status === "completed" || s.status === "failed") {
+          toast({
+            title: s.status === "completed" ? "Payment Confirmed" : "Payment Failed",
+            description:
+              s.status === "completed"
+                ? "Thank you! Your M-Pesa payment was confirmed."
+                : "The M-Pesa payment did not complete. Please try again.",
+            variant: s.status === "completed" ? undefined : "destructive",
+          });
+          return;
+        }
+      } catch {
+        // Keep polling; fall through to the M-Pesa direct query hint below.
+      }
+    }
+    try {
+      const live = await api.queryMpesaStatus(givingId);
+      setPaymentStatus(live.status);
+    } catch {
+      // Status stays as last known; user can retry.
+    }
+  };
 
   const createGivingRecord = useMutation({
-    mutationFn: async (data: InsertGivingRecord) => {
-      const response = await apiRequest("POST", `${site.apiBase}/api/giving`, data);
-      return response.json();
-    },
-    onSuccess: () => {
+    mutationFn: (data: InsertGivingRecord) => api.createGivingRecord(data),
+    onSuccess: (res: GivingCreateResponse) => {
+      setLastGivingId(res.id);
+      setPaymentStatus("initiated");
       toast({
         title: "Giving Submitted",
-        description: "You will receive an M-Pesa prompt on your phone shortly.",
+        description:
+          res.instructions ??
+          "You will receive an M-Pesa prompt on your phone shortly.",
       });
       setFormData({
         amount: "",
@@ -37,11 +69,12 @@ export default function GivingForm() {
         phoneNumber: "",
         message: ""
       });
+      void pollStatus(res.id);
     },
-    onError: () => {
+    onError: (err: Error) => {
       toast({
         title: "Error",
-        description: "Failed to process your giving. Please try again.",
+        description: err.message || "Failed to process your giving. Please try again.",
         variant: "destructive",
       });
     },
@@ -141,6 +174,15 @@ export default function GivingForm() {
             <Heart className="mr-2" size={20} />
             {createGivingRecord.isPending ? "Processing..." : "Give Now via M-Pesa"}
           </Button>
+
+          {lastGivingId && paymentStatus && (
+            <p
+              className="text-sm text-muted-foreground text-center"
+              data-testid="text-giving-status"
+            >
+              Payment status: <span className="font-semibold">{paymentStatus}</span>
+            </p>
+          )}
         </form>
 
         <div className="mt-6 p-4 bg-muted/50 rounded-lg">

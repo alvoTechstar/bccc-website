@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { ArrowRight, ArrowUpRight, Heart, Globe } from "lucide-react";
 import type { BlogPost } from "@/lib/schemas";
+import { api, Endpoints } from "@/lib/api";
 import { Reveal, Counter } from "@/components/motion/reveal";
 import { staggerContainer, staggerDir } from "@/lib/animations";
 import { fallbackPhotos, photos, photoProps } from "@/lib/site";
@@ -47,11 +48,8 @@ const ministries = [
 
 export default function Home() {
   const { data: blogPosts = [], isLoading } = useQuery<BlogPost[]>({
-    queryKey: ["/api/blog/posts"],
-    queryFn: async () => {
-      const response = await fetch("/api/blog/posts?limit=3");
-      return response.json();
-    },
+    queryKey: [Endpoints.blogPosts(3)],
+    queryFn: () => api.getBlogPosts(3),
   });
 
   return (

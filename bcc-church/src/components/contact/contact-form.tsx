@@ -8,10 +8,9 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { Send } from "lucide-react";
-import { site } from "@/lib/site";
 import type { InsertContactMessage } from "@/lib/schemas";
+import { api } from "@/lib/api";
 
 export default function ContactForm() {
   const { toast } = useToast();
@@ -26,10 +25,7 @@ export default function ContactForm() {
   });
 
   const createContactMessage = useMutation({
-    mutationFn: async (data: InsertContactMessage) => {
-      const response = await apiRequest("POST", `${site.apiBase}/api/contact`, data);
-      return response.json();
-    },
+    mutationFn: (data: InsertContactMessage) => api.createContactMessage(data),
     onSuccess: () => {
       toast({
         title: "Message Sent",
@@ -45,10 +41,10 @@ export default function ContactForm() {
         newsletter: false
       });
     },
-    onError: () => {
+    onError: (err: Error) => {
       toast({
         title: "Error",
-        description: "Failed to send your message. Please try again.",
+        description: err.message || "Failed to send your message. Please try again.",
         variant: "destructive",
       });
     },

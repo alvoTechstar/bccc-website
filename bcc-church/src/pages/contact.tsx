@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import ContactForm from "@/components/contact/contact-form";
 import { churchFacebook, mapsEmbed, youtubeChannelUrl } from "@/lib/site";

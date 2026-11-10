@@ -176,12 +176,14 @@ export default function Branches() {
                   size="sm"
                   className="btn-shine rounded-full bg-accent px-5 font-bold text-primary hover:bg-accent/90"
                   data-testid={`button-visit-${prefix}-${index}`}
-                  onClick={() =>
-                    setDirectionsTo({
-                      name: branch.name,
-                      query: "mapQuery" in branch ? branch.mapQuery : branch.location,
-                    })
-                  }
+                    onClick={() =>
+                      setDirectionsTo({
+                        name: branch.name,
+                        query:
+                          (branch as { mapQuery?: string }).mapQuery ??
+                          branch.location,
+                      })
+                    }
                 >
                   <MapPin className="mr-1.5" size={15} />
                   Get Directions

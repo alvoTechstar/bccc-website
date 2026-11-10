@@ -67,5 +67,5 @@ export const insertGivingRecordSchema = givingRecordSchema.omit({
 });
 
 export type BlogPost = z.infer<typeof blogPostSchema>;
-export type InsertContactMessage = z.infer<typeof insertContactMessageSchema>;
-export type InsertGivingRecord = z.infer<typeof insertGivingRecordSchema>;
+export type InsertContactMessage = z.input<typeof insertContactMessageSchema>;
+export type InsertGivingRecord = z.input<typeof insertGivingRecordSchema>;

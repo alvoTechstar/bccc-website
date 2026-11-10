@@ -2,13 +2,13 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import BlogCard from "@/components/blog/blog-card";
 import { Search } from "lucide-react";
 import type { BlogPost } from "@/lib/schemas";
+import { api, Endpoints } from "@/lib/api";
 import { PageHero } from "@/components/motion/page-hero";
 import { Reveal, SectionHeading, Counter } from "@/components/motion/reveal";
 import { staggerContainer, staggerDir } from "@/lib/animations";
@@ -18,11 +18,8 @@ export default function Blog() {
   const [searchTerm, setSearchTerm] = useState<string>("");
 
   const { data: allPosts = [], isLoading } = useQuery<BlogPost[]>({
-    queryKey: ["/api/blog/posts"],
-    queryFn: async () => {
-      const response = await fetch("/api/blog/posts");
-      return response.json();
-    },
+    queryKey: [Endpoints.blogPosts()],
+    queryFn: () => api.getBlogPosts(),
   });
 
   const categories = [

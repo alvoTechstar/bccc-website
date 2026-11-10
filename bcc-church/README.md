@@ -20,10 +20,10 @@ npm run dev
 | `VITE_API_URL` | Base URL of `bccc-backend`. Empty = same-origin (dev proxy). |
 
 Local dev proxies `/api` and `/healthz` to `http://localhost:3001`
-(see `vite.config.ts`). Production example:
+(see `vite.config.ts`). Production (live):
 
 ```
-VITE_API_URL=https://bccc-backend.onrender.com
+VITE_API_URL=https://bccc-website-backend.onrender.com
 ```
 
 ## API integration

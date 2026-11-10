@@ -4,9 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import BlogCard from "@/components/blog/blog-card";
 import { Search } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import type { BlogPost } from "@/lib/schemas";
 import { api, Endpoints } from "@/lib/api";
 import { PageHero } from "@/components/motion/page-hero";
@@ -14,13 +15,48 @@ import { Reveal, SectionHeading, Counter } from "@/components/motion/reveal";
 import { staggerContainer, staggerDir } from "@/lib/animations";
 
 export default function Blog() {
+  const { toast } = useToast();
   const [selectedCategory, setSelectedCategory] = useState<string>("All Posts");
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [newsletterEmail, setNewsletterEmail] = useState<string>("");
 
   const { data: allPosts = [], isLoading } = useQuery<BlogPost[]>({
     queryKey: [Endpoints.blogPosts()],
     queryFn: () => api.getBlogPosts(),
   });
+
+  const subscribeNewsletter = useMutation({
+    mutationFn: (email: string) =>
+      api.subscribeNewsletter({ email, source: "blog-page" }),
+    onSuccess: (res) => {
+      toast({
+        title: res.created ? "Subscribed!" : "Already subscribed",
+        description: res.message,
+      });
+      if (res.created) setNewsletterEmail("");
+    },
+    onError: (err: Error) => {
+      toast({
+        title: "Subscription failed",
+        description: err.message || "Please check your email and try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const email = newsletterEmail.trim();
+    if (!email) {
+      toast({
+        title: "Email required",
+        description: "Please enter your email address to subscribe.",
+        variant: "destructive",
+      });
+      return;
+    }
+    subscribeNewsletter.mutate(email);
+  };
 
   const categories = [
     "All Posts",
@@ -235,23 +271,31 @@ export default function Blog() {
               </p>
             </Reveal>
             <Reveal delay={0.18} from="right">
-              <div className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+              <form
+                onSubmit={handleNewsletterSubmit}
+                className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto"
+              >
                 <Input
                   type="email"
                   placeholder="Enter your email address"
+                  value={newsletterEmail}
+                  onChange={(e) => setNewsletterEmail(e.target.value)}
                   className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-gray-300"
                   data-testid="input-newsletter-email"
+                  required
                 />
                 <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <Button
+                    type="submit"
                     size="lg"
+                    disabled={subscribeNewsletter.isPending}
                     className="btn-shine bg-accent text-accent-foreground hover:bg-accent/90"
                     data-testid="button-newsletter-subscribe"
                   >
-                    Subscribe
+                    {subscribeNewsletter.isPending ? "Subscribing..." : "Subscribe"}
                   </Button>
                 </motion.span>
-              </div>
+              </form>
             </Reveal>
             <Reveal delay={0.24}>
               <p className="text-sm text-gray-300 mt-4">

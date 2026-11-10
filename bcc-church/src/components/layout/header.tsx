@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, ChevronDown, Church, MapPin, Menu, Users, X } from "lucide-react";
+import { ArrowRight, BookOpen, ChevronDown, Church, Heart, MapPin, Menu, Users, X } from "lucide-react";
 
 export const aboutSubItems = [
   { label: "About the Church", desc: "Our story, values & impact", path: "/about", icon: Church },
@@ -45,6 +45,7 @@ export default function Header() {
     { label: "About", path: "/about", children: aboutSubItems },
     { label: "Ministries", path: "/ministries" },
     { label: "Sermons", path: "/sermons" },
+    { label: "Blog", path: "/blog" },
     { label: "Events", path: "/events" },
     { label: "Contact", path: "/contact" },
   ];
@@ -221,6 +222,15 @@ export default function Header() {
             </div>
 
             <div className="flex lg:hidden items-center gap-2">
+              <Link href="/giving">
+                <Button
+                  size="sm"
+                  className="rounded-full bg-accent px-4 py-2 font-bold text-accent-foreground hover:bg-accent/90"
+                  data-testid="button-header-give-mobile"
+                >
+                  <Heart size={15} className="mr-1" /> Give
+                </Button>
+              </Link>
               <Button
                 variant="ghost"
                 size="icon"
@@ -358,8 +368,19 @@ export default function Header() {
                   <p className="text-sm font-bold uppercase tracking-widest text-accent">Sundays</p>
                   <p className="mt-1 font-serif text-xl font-bold">8:30 & 10:30</p>
                   <p className="text-sm text-primary-foreground/70">Nakuru · Narok · Online</p>
+                  <Link href="/giving">
+                    <Button
+                      className="btn-shine mt-4 w-full rounded-full bg-accent font-bold text-accent-foreground hover:bg-accent/90"
+                      data-testid="button-mobile-nav-give"
+                    >
+                      <Heart size={16} className="mr-1" /> Give Now
+                    </Button>
+                  </Link>
                   <Link href="/contact">
-                    <Button className="mt-4 w-full rounded-full bg-accent font-bold text-accent-foreground hover:bg-accent/90">
+                    <Button
+                      variant="outline"
+                      className="mt-2.5 w-full rounded-full border-white/25 text-white hover:bg-white/10 hover:text-accent"
+                    >
                       Plan Your Visit <ArrowRight size={16} className="ml-1" />
                     </Button>
                   </Link>

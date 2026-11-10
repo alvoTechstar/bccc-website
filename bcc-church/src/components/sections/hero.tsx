@@ -2,7 +2,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { ArrowRight, MapPin, Radio } from "lucide-react";
+import { ArrowRight, Heart, MapPin, Radio } from "lucide-react";
 import { Marquee } from "@/components/motion/reveal";
 import { EASE_OUT } from "@/lib/animations";
 import { fallbackPhotos, photos, photoProps } from "@/lib/site";
@@ -100,24 +100,33 @@ export default function Hero() {
         </motion.p>
 
         <motion.div variants={item} className="mt-9 flex flex-col sm:flex-row gap-4">
-          <Link href="/contact">
+          <Link href="/contact" className="w-full sm:w-auto">
             <Button
               size="lg"
-              className="btn-shine bg-accent text-accent-foreground hover:bg-accent/90 text-base px-9 py-7 rounded-full font-bold"
+              className="btn-shine w-full sm:w-auto justify-center bg-accent text-accent-foreground hover:bg-accent/90 text-base px-9 py-7 rounded-full font-bold"
               data-testid="button-join-services"
             >
               Plan Your Visit <ArrowRight className="ml-2" size={20} />
             </Button>
           </Link>
-          <Link href="/sermons">
+          <Link href="/sermons" className="w-full sm:w-auto">
             <Button
               size="lg"
               variant="outline"
-              className="glass-pill text-white hover:bg-white/20 text-base px-9 py-7 rounded-full font-bold border-white/30"
+              className="glass-pill w-full sm:w-auto justify-center text-white hover:bg-white/20 text-base px-9 py-7 rounded-full font-bold border-white/30"
               data-testid="button-watch-live"
             >
               <span className="mr-2 inline-flex h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse-soft" />
               Watch Online
+            </Button>
+          </Link>
+          <Link href="/giving" className="w-full sm:w-auto sm:hidden">
+            <Button
+              size="lg"
+              className="w-full justify-center bg-white text-primary hover:bg-white/90 text-base px-9 py-7 rounded-full font-bold"
+              data-testid="button-hero-give"
+            >
+              <Heart className="mr-2" size={20} /> Give Now
             </Button>
           </Link>
         </motion.div>

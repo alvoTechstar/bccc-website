@@ -17,6 +17,7 @@ export default function GivingForm() {
     amount: "",
     givingType: "",
     phoneNumber: "",
+    email: "",
     message: ""
   });
   const [lastGivingId, setLastGivingId] = useState<string | null>(null);
@@ -53,7 +54,12 @@ export default function GivingForm() {
   };
 
   const createGivingRecord = useMutation({
-    mutationFn: (data: InsertGivingRecord) => api.createGivingRecord(data),
+    // Empty email string -> undefined so the optional backend field stays clean.
+    mutationFn: (data: InsertGivingRecord) =>
+      api.createGivingRecord({
+        ...data,
+        email: data.email?.trim() ? data.email.trim() : undefined,
+      }),
     onSuccess: (res: GivingCreateResponse) => {
       setLastGivingId(res.id);
       setPaymentStatus("initiated");
@@ -67,6 +73,7 @@ export default function GivingForm() {
         amount: "",
         givingType: "",
         phoneNumber: "",
+        email: "",
         message: ""
       });
       void pollStatus(res.id);
@@ -148,6 +155,20 @@ export default function GivingForm() {
               onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
               data-testid="input-phone"
               required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="email" className="block text-sm font-medium text-primary mb-2">
+              Email (Optional — for your receipt)
+            </Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              value={formData.email ?? ""}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              data-testid="input-email"
             />
           </div>
 

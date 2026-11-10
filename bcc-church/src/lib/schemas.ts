@@ -15,6 +15,10 @@ export const blogPostSchema = z.object({
   author: z.string(),
   imageUrl: z.string().optional(),
   published: z.boolean().default(true),
+  // Origin: "local" (in-house) or "facebook" (synced from the church page).
+  source: z.string().optional(),
+  sourceUrl: z.string().optional(),
+  facebookPostId: z.string().optional(),
   createdAt: z.date(),
   updatedAt: z.date(),
 });
@@ -48,6 +52,8 @@ export const givingRecordSchema = z.object({
   }),
   givingType: z.string(),
   phoneNumber: z.string().min(1, "Phone number is required"),
+  // Optional — used for the M-Pesa thank-you email receipt.
+  email: z.string().email("Invalid email address").optional(),
   message: z.string().optional(),
   transactionId: z.string().optional(),
   status: z.string().default("pending"),

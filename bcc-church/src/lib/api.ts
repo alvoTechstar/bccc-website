@@ -21,6 +21,10 @@ import type {
  *   GET    /api/giving/records/:id/status
  *   GET    /api/mpesa/status/:id    -> live Daraja query (fallback when callback is late)
  *   POST   /api/mpesa/callback      -> called by Safaricom, NOT by the frontend
+ *   POST   /api/blog/posts/sync/facebook -> admin-triggered Facebook sync
+ *          (send SYNC_SECRET as `x-sync-secret` when the backend sets one)
+ *   POST   /api/newsletter/subscribe    -> newsletter signup (welcome email)
+ *   GET    /api/newsletter/subscribers  -> list (admin)
  *
  * Base URL comes from VITE_API_URL. Leave it empty for same-origin
  * (Vite dev proxy or same-host deploy), or set it to the Render URL, e.g.
@@ -70,6 +74,12 @@ export const Endpoints = {
     `/api/giving/records/${encodeURIComponent(id)}/status`,
   mpesaStatus: (givingId: string) =>
     `/api/mpesa/status/${encodeURIComponent(givingId)}`,
+  facebookSync: (limit?: number) =>
+    limit !== undefined
+      ? `/api/blog/posts/sync/facebook?limit=${limit}`
+      : "/api/blog/posts/sync/facebook",
+  newsletterSubscribe: "/api/newsletter/subscribe",
+  newsletterSubscribers: "/api/newsletter/subscribers",
 } as const;
 
 /* ---------- typed API functions ---------- */
@@ -100,6 +110,12 @@ export interface ContactCreateResponse {
   id: string;
 }
 
+export interface NewsletterSubscribeResponse {
+  message: string;
+  id: string;
+  created: boolean;
+}
+
 export const api = {
   health: () => request<{ ok: boolean }>(Endpoints.health),
   healthDb: () => request<{ ok: boolean; db: string }>(Endpoints.healthDb),
@@ -125,4 +141,24 @@ export const api = {
     request<GivingStatusResponse>(Endpoints.givingStatus(id)),
   queryMpesaStatus: (givingId: string) =>
     request<MpesaStatusResponse>(Endpoints.mpesaStatus(givingId)),
+
+  /**
+   * Admin-triggered Facebook -> blog sync. Only works if the backend has
+   * FACEBOOK_PAGE_ID + FACEBOOK_PAGE_ACCESS_TOKEN set. Pass the SYNC_SECRET
+   * when the backend requires it.
+   */
+  syncFacebookPosts: (limit?: number, syncSecret?: string) =>
+    request<{ message: string; fetched: number; created: number; updated: number }>(
+      Endpoints.facebookSync(limit),
+      {
+        method: "POST",
+        ...(syncSecret ? { headers: { "x-sync-secret": syncSecret } } : {}),
+      }
+    ),
+
+  subscribeNewsletter: (data: { email: string; name?: string; source?: string }) =>
+    request<NewsletterSubscribeResponse>(Endpoints.newsletterSubscribe, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
 };

@@ -384,3 +384,26 @@
     transition: none;
   }
 }
+
+/*
+ * Mobile (< sm): buttons inside vertically-stacked rows stretch full-width
+ * so CTAs (hero, section CTAs, directions modal, contact actions) sit
+ * balanced instead of left-aligned slivers. Anchors/wrappers stretch via
+ * flexbox already; this makes the button fill its wrapper. Content stays
+ * centered because the button base is inline-flex + justify-center.
+ * Scoped to real <button> elements only — text rows are untouched.
+ */
+@media (max-width: 639.98px) {
+  /* Wrappers become block so they fill the row … */
+  .flex-col > a {
+    display: block;
+  }
+  /* … and buttons fill their wrapper. Content stays centered because
+     the button base is flex with items-center + justify-center. */
+  .flex-col > button,
+  .flex-col > a > button,
+  .flex-col > span > button {
+    display: flex;
+    width: 100%;
+  }
+}

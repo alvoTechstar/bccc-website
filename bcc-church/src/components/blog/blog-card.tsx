@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, ArrowRight } from "lucide-react";
+import { Calendar, ArrowRight, Facebook } from "lucide-react";
 import type { BlogPost } from "@/lib/schemas";
 
 interface BlogCardProps {
@@ -40,6 +40,11 @@ export default function BlogCard({ post, featured = false }: BlogCardProps) {
               <Badge variant="outline" className="text-accent border-accent" data-testid={`badge-category-${post.id}`}>
                 {post.category}
               </Badge>
+              {post.source === "facebook" && (
+                <Badge className="ml-2 bg-[#1877F2] text-white" data-testid={`badge-source-${post.id}`}>
+                  <Facebook size={12} className="mr-1" /> Facebook
+                </Badge>
+              )}
               <span className="mx-2 text-muted-foreground">•</span>
               <span className="text-muted-foreground text-sm flex items-center" data-testid={`text-date-${post.id}`}>
                 <Calendar size={14} className="mr-1" />
@@ -68,6 +73,17 @@ export default function BlogCard({ post, featured = false }: BlogCardProps) {
               <Button variant="ghost" className="text-accent hover:text-accent/80" data-testid={`button-read-more-${post.id}`}>
                 Read More <ArrowRight size={16} className="ml-1" />
               </Button>
+              {post.sourceUrl && (
+                <a
+                  href={post.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center text-sm font-semibold text-[#1877F2] hover:underline"
+                  data-testid={`link-source-${post.id}`}
+                >
+                  <Facebook size={14} className="mr-1" /> View original
+                </a>
+              )}
             </div>
           </CardContent>
         </div>
@@ -91,6 +107,11 @@ export default function BlogCard({ post, featured = false }: BlogCardProps) {
           <Badge variant="outline" className="text-accent border-accent" data-testid={`badge-category-${post.id}`}>
             {post.category}
           </Badge>
+          {post.source === "facebook" && (
+            <Badge className="ml-2 bg-[#1877F2] text-white" data-testid={`badge-source-${post.id}`}>
+              <Facebook size={12} className="mr-1" /> Facebook
+            </Badge>
+          )}
           <span className="mx-2 text-muted-foreground">•</span>
           <span className="text-muted-foreground text-sm flex items-center" data-testid={`text-date-${post.id}`}>
             <Calendar size={12} className="mr-1" />
@@ -106,6 +127,17 @@ export default function BlogCard({ post, featured = false }: BlogCardProps) {
         <Button variant="ghost" className="text-accent hover:text-accent/80 text-sm p-0" data-testid={`button-read-more-${post.id}`}>
           Read More <ArrowRight size={14} className="ml-1" />
         </Button>
+        {post.sourceUrl && (
+          <a
+            href={post.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-2 inline-flex items-center text-sm font-semibold text-[#1877F2] hover:underline"
+            data-testid={`link-source-${post.id}`}
+          >
+            <Facebook size={14} className="mr-1" /> View original
+          </a>
+        )}
       </CardContent>
     </Card>
   );

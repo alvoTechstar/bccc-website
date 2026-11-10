@@ -31,7 +31,12 @@ import type {
  * VITE_API_URL=https://bccc-backend.onrender.com
  */
 
-export const API_BASE = (import.meta.env.VITE_API_URL as string | undefined ?? "").replace(/\/$/, "");
+export const API_BASE = (
+  (import.meta.env.VITE_API_URL as string | undefined) ??
+  // Fallback so production works even if VITE_API_URL wasn't set at build
+  // time (e.g. Cloudflare Pages dashboard env missing). Explicit env wins.
+  "https://bccc-website-backend.onrender.com"
+).replace(/\/$/, "");
 
 function url(path: string): string {
   return `${API_BASE}${path}`;

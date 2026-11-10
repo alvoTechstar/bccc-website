@@ -11,7 +11,10 @@ import type { SyntheticEvent } from "react";
 export const site = {
   name: "BCC Church",
   fullName: "Beautiful Courts Christian Church",
-  apiBase: ((import.meta.env.VITE_API_URL as string | undefined) ?? "").replace(/\/$/, ""),
+  apiBase: (
+    (import.meta.env.VITE_API_URL as string | undefined) ??
+    "https://bccc-website-backend.onrender.com"
+  ).replace(/\/$/, ""),
   contact: {
     phone: "+254 720 123 456",
     email: "info@bccchurch.co.ke",

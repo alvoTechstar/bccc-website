@@ -58,9 +58,9 @@ export default function Summit() {
           <Reveal from="right" delay={0.1}>
             <p className="mt-4 text-lg text-white/75 leading-relaxed max-w-xl">
               Seven glorious days at {summit.venue} with convenor{" "}
-              <span className="font-bold text-white">{summit.convenor}</span> and{" "}
-              <span className="font-bold text-white">{summit.coConvenor}</span>, daily{" "}
-              {summit.time}. Come expectant — come prevailing.
+              <span className="font-bold text-white">{summit.convenor}</span>, daily{" "}
+              {summit.time} — and a powerful lineup of guest ministers. Come
+              expectant — come prevailing.
             </p>
           </Reveal>
           <Reveal from="scale" delay={0.16}>
@@ -70,13 +70,20 @@ export default function Summit() {
             <p className="mt-2 font-serif text-5xl lg:text-6xl font-black gold-accent uppercase leading-[1.02]">
               Growing <span className="text-white">and</span> Prevailing
             </p>
+            <p className="mt-2 text-xs font-bold uppercase tracking-[0.3em] text-white/60">
+              Convened by {summit.convenor}
+            </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              {[summit.convenor, summit.coConvenor, ...summit.guests].map((m) => (
+              {[summit.convenor, ...summit.guests].map((m, i) => (
                 <span
                   key={m}
-                  className="rounded-full border border-accent/40 bg-accent/10 px-3.5 py-1.5 text-xs font-bold text-white/90"
+                  className={`rounded-full border px-3.5 py-1.5 text-xs font-bold ${
+                    i === 0
+                      ? "border-accent bg-accent text-primary"
+                      : "border-accent/40 bg-accent/10 text-white/90"
+                  }`}
                 >
-                  {m}
+                  {i === 0 ? `Convenor · ${m}` : m}
                 </span>
               ))}
             </div>

@@ -21,7 +21,6 @@ export default function AdminSetPassword() {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [done, setDone] = useState(false);
 
   if (authed) return <Redirect to="/admin" />;
@@ -31,13 +30,11 @@ export default function AdminSetPassword() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    setErrorMessage("");
     const res = await acceptInvite(token, password, confirm);
     setBusy(false);
     if (res.ok) {
       setDone(true);
     } else {
-      setErrorMessage(res.error ?? "Could not set password.");
       toast({ title: "Could not set password", description: res.error, variant: "destructive" });
     }
   };
@@ -97,8 +94,6 @@ export default function AdminSetPassword() {
             errorMessage="Passwords do not match."
             data-testid="input-confirm-password"
           />
-
-          {errorMessage && <div className="mb-3 text-sm text-red-600">{errorMessage}</div>}
 
           <div className="mb-2 mt-6">
             <AuthSubmitButton loading={busy} disabled={!isValid} testId="button-set-password">

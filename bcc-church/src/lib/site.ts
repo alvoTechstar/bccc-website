@@ -36,8 +36,8 @@ export const summit = {
   time: "9:00 AM – 9:00 PM",
   venue: "Mawanga, Kwa Buda Church Headquarters",
   convenor: "Pst. J.B. Tajeu",
-  coConvenor: "Apostle Jesse Karanja",
   guests: [
+    "Apostle Jesse Karanja",
     "Pst. Moses Nyaga",
     "Rev. Stanley Njoroge",
     "Rev. Pancras Ngira",

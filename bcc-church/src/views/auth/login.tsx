@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, Redirect, useLocation } from "wouter";
 import { KeyRound } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { isDefaultPasswordInUse, useAdminAuth } from "@/lib/admin-auth";
+import { useAdminAuth } from "@/lib/admin-auth";
 import { AuthPasswordInput, AuthShell, AuthSubmitButton, AuthTextInput } from "./auth-layout";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -26,7 +26,6 @@ export default function AdminLogin() {
   const [devOtp, setDevOtp] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loadingResend, setLoadingResend] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
   if (authed) return <Redirect to="/admin" />;
 
@@ -37,11 +36,10 @@ export default function AdminLogin() {
   const submitCredentials = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    setErrorMessage("");
     const res = await startLogin(email, password);
     setBusy(false);
     if (!res.ok) {
-      setErrorMessage(res.error ?? "Sign in failed.");
+      toast({ title: "Sign in failed", description: res.error ?? "Check your details and try again.", variant: "destructive" });
       return;
     }
     if (res.user) {
@@ -59,18 +57,17 @@ export default function AdminLogin() {
   const submitOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (otp.trim().length !== 6) {
-      setErrorMessage("Please enter the 6-digit code.");
+      toast({ title: "Invalid code", description: "Please enter the 6-digit code.", variant: "destructive" });
       return;
     }
     setBusy(true);
-    setErrorMessage("");
     const res = await verifyOtp(email, otp);
     setBusy(false);
     if (res.ok && res.user) {
       toast({ title: `Welcome back, ${res.user.name}` });
       navigate("/admin");
     } else {
-      setErrorMessage(res.error ?? "Code verification failed.");
+      toast({ title: "Code verification failed", description: res.error ?? "Check the code and try again.", variant: "destructive" });
     }
   };
 
@@ -112,8 +109,6 @@ export default function AdminLogin() {
             data-testid="input-admin-password"
           />
 
-          {errorMessage && <div className="mb-3 text-sm text-red-600">{errorMessage}</div>}
-
           <div className="mb-2 mt-6">
             <AuthSubmitButton loading={busy} disabled={!stepValid} testId="button-admin-login">
               Sign In
@@ -125,12 +120,6 @@ export default function AdminLogin() {
               Forgot Password?
             </Link>
           </div>
-
-          {isDefaultPasswordInUse() && (
-            <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
-              Default admin credentials are still in use. Sign in and create named admins in <span className="font-bold">Users</span>, then remove or reset the default.
-            </p>
-          )}
 
           <div className="mt-2 text-center">
             <Link href="/" className="text-xs font-semibold text-gray-500 hover:text-primary">
@@ -164,7 +153,6 @@ export default function AdminLogin() {
               Dev code: {devOtp}
             </p>
           )}
-          {errorMessage && <div className="mb-3 text-sm text-red-600">{errorMessage}</div>}
           <div className="mb-3 text-center text-[13px]">
             <span className="text-gray-500">Didn't receive the code? </span>
             {loadingResend ? (
@@ -179,7 +167,7 @@ export default function AdminLogin() {
             </AuthSubmitButton>
           </div>
           <div className="mb-3 mt-2 text-center">
-            <span className="cursor-pointer text-xs font-semibold text-gray-500 hover:text-primary" onClick={() => { setView(0); setOtp(""); setErrorMessage(""); }}>
+            <span className="cursor-pointer text-xs font-semibold text-gray-500 hover:text-primary" onClick={() => { setView(0); setOtp(""); }}>
               ← Back
             </span>
           </div>

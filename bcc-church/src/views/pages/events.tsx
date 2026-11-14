@@ -76,10 +76,10 @@ export default function Events() {
             </Reveal>
             <Reveal from="right" delay={0.1}>
               <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-                Seven glorious days at {summit.venue} with convenor{" "}
-                <strong className="text-primary">{summit.convenor}</strong> and{" "}
-                <strong className="text-primary">{summit.coConvenor}</strong>,{" "}
-                daily {summit.time} — with {summit.guests.join(", ")}.
+                Seven glorious days at {summit.venue} under convenor{" "}
+                <strong className="text-primary">{summit.convenor}</strong>,
+                daily {summit.time} — with guest ministers{" "}
+                {summit.guests.join(", ")}.
               </p>
             </Reveal>
 

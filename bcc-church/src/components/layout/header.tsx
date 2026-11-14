@@ -134,8 +134,8 @@ export default function Header() {
             <nav className="hidden lg:flex items-center gap-0.5 rounded-[10px] border border-white/15 bg-white/[0.07] px-1.5 py-1 backdrop-blur" aria-label="Primary">
               <Link href="/" data-testid="link-nav-home">
                 <span
-                  className={`nav-link relative rounded-full px-4 py-2 text-sm font-semibold ${
-                    isActive("/") ? "text-primary" : "text-primary-foreground/85"
+                  className={`nav-link relative rounded-full px-4 py-2 text-sm font-semibold transition-colors hover:bg-white/10 ${
+                    isActive("/") ? "text-primary hover:text-primary" : "text-primary-foreground/85"
                   }`}
                 >
                   {isActive("/") && (
@@ -158,8 +158,8 @@ export default function Header() {
                   >
                     <Link href={item.path} data-testid={`link-nav-${item.label.toLowerCase()}`}>
                       <span
-                        className={`nav-link relative flex items-center gap-1 rounded-full px-4 py-2 text-sm font-semibold ${
-                          isAboutActive ? "text-primary" : "text-primary-foreground/85"
+                        className={`nav-link relative flex items-center gap-1 rounded-full px-4 py-2 text-sm font-semibold transition-colors hover:bg-white/10 ${
+                          isAboutActive ? "text-primary hover:text-primary" : "text-primary-foreground/85"
                         }`}
                       >
                         {isAboutActive && (
@@ -236,8 +236,8 @@ export default function Header() {
                 ) : (
                   <Link key={item.path} href={item.path} data-testid={`link-nav-${item.label.toLowerCase()}`}>
                     <span
-                      className={`nav-link relative rounded-full px-4 py-2 text-sm font-semibold ${
-                        isActive(item.path) ? "text-primary" : "text-primary-foreground/85"
+                      className={`nav-link relative rounded-full px-4 py-2 text-sm font-semibold transition-colors hover:bg-white/10 ${
+                        isActive(item.path) ? "text-primary hover:text-primary" : "text-primary-foreground/85"
                       }`}
                     >
                       {isActive(item.path) && (
@@ -266,7 +266,7 @@ export default function Header() {
               <Link href="/giving">
                 <Button
                   size="sm"
-                  className="rounded-full bg-accent px-4 py-2 font-bold text-accent-foreground hover:bg-accent/90"
+                  className="rounded-[10px] bg-accent px-4 py-2 font-bold text-accent-foreground hover:bg-accent/90"
                   data-testid="button-header-give-mobile"
                 >
                   <Heart size={15} className="mr-1" /> Give

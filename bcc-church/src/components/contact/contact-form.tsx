@@ -68,8 +68,8 @@ export default function ContactForm() {
   };
 
   return (
-    <Card className="shadow-xl">
-      <CardContent className="p-8">
+    <Card className="shadow-xl overflow-hidden">
+      <CardContent className="p-5 sm:p-8">
         <h3 className="text-2xl font-bold text-primary mb-6 font-serif" data-testid="text-contact-form-title">Send Us a Message</h3>
         
         <form onSubmit={handleSubmit} className="space-y-6">

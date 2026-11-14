@@ -123,9 +123,10 @@ function ScrollToTop() {
       initial={false}
       animate={{ opacity: isVisible ? 1 : 0, y: isVisible ? 0 : 12 }}
       transition={{ duration: 0.3 }}
-      className={`fixed bottom-8 right-8 w-12 h-12 bg-accent text-accent-foreground rounded-full shadow-xl hover:bg-accent/90 z-40 ${
+      className={`fixed z-40 flex shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-xl hover:bg-accent/90 ${
         isVisible ? '' : 'pointer-events-none'
       }`}
+      style={{ width: 48, height: 48, right: 16, bottom: 24 }}
       aria-label="Scroll to top"
     >
       <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">

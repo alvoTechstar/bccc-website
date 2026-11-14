@@ -111,34 +111,34 @@ export default function Hero() {
           family, business, and beyond. Come as you are. Leave transformed.
         </motion.p>
 
-        <motion.div variants={item} className="mt-9 flex flex-col sm:flex-row gap-4">
-          <Link href="/contact" className="w-full sm:w-auto">
+        <motion.div variants={item} className="mt-9 grid grid-cols-2 gap-3 sm:flex sm:flex-row sm:gap-4">
+          <Link href="/contact" className="w-full">
             <Button
               size="lg"
-              className="btn-shine w-full sm:w-auto justify-center bg-accent text-accent-foreground hover:bg-accent/90 rounded-full font-bold"
+              className="btn-shine w-full justify-center bg-accent text-accent-foreground hover:bg-accent/90 rounded-full font-bold px-4 sm:px-7 text-sm sm:text-[15px]"
               data-testid="button-join-services"
             >
-              Plan Your Visit <ArrowRight className="ml-2" size={18} />
+              Plan Your Visit <ArrowRight className="ml-1.5 sm:ml-2 shrink-0" size={18} />
             </Button>
           </Link>
-          <Link href="/sermons" className="w-full sm:w-auto">
+          <Link href="/sermons" className="w-full">
             <Button
               size="lg"
               variant="outline"
-              className="glass-pill w-full sm:w-auto justify-center text-white hover:bg-white/20 rounded-full font-bold border-white/30"
+              className="glass-pill w-full justify-center text-white hover:bg-white/20 rounded-full font-bold border-white/30 px-4 sm:px-7 text-sm sm:text-[15px]"
               data-testid="button-watch-live"
             >
-              <span className="mr-2 inline-flex h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse-soft" />
+              <span className="mr-1.5 sm:mr-2 inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-red-500 animate-pulse-soft" />
               Watch Online
             </Button>
           </Link>
-          <Link href="/giving" className="w-full sm:w-auto sm:hidden">
+          <Link href="/giving" className="col-span-2 sm:col-span-1 sm:w-auto sm:hidden">
             <Button
               size="lg"
-              className="w-full justify-center bg-white text-primary hover:bg-white/90 rounded-full font-bold"
+              className="w-full justify-center bg-white text-primary hover:bg-white/90 rounded-full font-bold text-sm"
               data-testid="button-hero-give"
             >
-              <Heart className="mr-2" size={18} /> Give Now
+              <Heart className="mr-2 shrink-0" size={18} /> Give Now
             </Button>
           </Link>
         </motion.div>

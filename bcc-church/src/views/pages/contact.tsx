@@ -156,14 +156,14 @@ export default function Contact() {
                     <div className="relative space-y-2">
                       {serviceTimes.map((service, index) => (
                         <Reveal key={index} delay={index * 0.06} y={12}>
-                          <div className="flex justify-between items-center gap-3 py-2.5 px-3.5 rounded-xl border border-white/10 bg-white/[0.06] hover:border-accent/40 transition-colors">
-                            <div>
+                          <div className="flex flex-wrap justify-between items-center gap-x-3 gap-y-1 py-2.5 px-3.5 rounded-xl border border-white/10 bg-white/[0.06] hover:border-accent/40 transition-colors">
+                            <div className="min-w-0">
                               <span className="font-bold text-white text-[15px]" data-testid={`text-service-${index}-day`}>
                                 {service.day}
                               </span>
                               <span className="text-xs text-white/50 ml-2">({service.type})</span>
                             </div>
-                            <span className="text-accent text-sm font-bold whitespace-nowrap" data-testid={`text-service-${index}-time`}>
+                            <span className="text-accent text-sm font-bold shrink-0" data-testid={`text-service-${index}-time`}>
                               {service.time}
                             </span>
                           </div>
@@ -181,21 +181,21 @@ export default function Contact() {
                       Follow Us
                     </h3>
                     <p className="relative text-sm text-white/60 mb-5">Daily encouragement, live alerts & testimonies.</p>
-                    <div className="relative flex gap-3">
+                    <div className="relative flex flex-col min-[420px]:flex-row gap-3">
                       <motion.a
                         href={churchFacebook}
                         target="_blank"
                         rel="noreferrer"
                         whileHover={{ scale: 1.06, y: -3 }}
                         whileTap={{ scale: 0.94 }}
-                        className="flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-[#1877F2] px-5 py-3.5 font-bold text-white shadow-lg"
+                        className="flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-[#1877F2] px-5 py-3.5 font-bold text-white shadow-lg min-w-0"
                         data-testid="link-social-facebook"
                         aria-label="Facebook"
                       >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                         </svg>
-                        Facebook
+                        <span className="truncate">Facebook</span>
                       </motion.a>
                       <motion.a
                         href={youtubeChannelUrl}
@@ -203,14 +203,14 @@ export default function Contact() {
                         rel="noreferrer"
                         whileHover={{ scale: 1.06, y: -3 }}
                         whileTap={{ scale: 0.94 }}
-                        className="flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-[#FF0000] px-5 py-3.5 font-bold text-white shadow-lg"
+                        className="flex flex-1 items-center justify-center gap-2.5 rounded-2xl bg-[#FF0000] px-5 py-3.5 font-bold text-white shadow-lg min-w-0"
                         data-testid="link-social-youtube"
                         aria-label="YouTube"
                       >
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
                         </svg>
-                        YouTube
+                        <span className="truncate">YouTube</span>
                       </motion.a>
                     </div>
                   </article>
@@ -353,15 +353,15 @@ export default function Contact() {
               </p>
             </Reveal>
             <Reveal delay={0.18} from="up">
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} className="inline-block">
-                  <button className="btn-shine bg-accent text-accent-foreground px-8 py-4 rounded-lg font-semibold hover:bg-accent/90 transition-colors" data-testid="button-schedule-visit">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto sm:max-w-none">
+                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} className="inline-block w-full sm:w-auto">
+                  <button className="btn-shine bg-accent text-accent-foreground px-8 py-4 rounded-lg font-semibold hover:bg-accent/90 transition-colors w-full sm:w-auto text-sm sm:text-base" data-testid="button-schedule-visit">
                     <Calendar className="mr-2 inline" size={20} />
                     Schedule a Visit
                   </button>
                 </motion.span>
-                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} className="inline-block">
-                  <button className="border-2 border-accent text-accent px-8 py-4 rounded-lg font-semibold hover:bg-accent hover:text-accent-foreground transition-colors" data-testid="button-emergency-prayer">
+                <motion.span whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.96 }} className="inline-block w-full sm:w-auto">
+                  <button className="border-2 border-accent text-accent px-8 py-4 rounded-lg font-semibold hover:bg-accent hover:text-accent-foreground transition-colors w-full sm:w-auto text-sm sm:text-base" data-testid="button-emergency-prayer">
                     <Heart className="mr-2 inline" size={20} />
                     Emergency Prayer Line
                   </button>

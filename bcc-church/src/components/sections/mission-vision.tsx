@@ -24,8 +24,9 @@ export default function MissionVision() {
           </Reveal>
           <Reveal from="right" delay={0.12}>
             <p className="text-lg text-white/70 leading-relaxed max-w-xl lg:ml-auto">
-              Two sentences carry this house — what God sent us to do every day,
-              and what He showed us we are becoming. Everything else is details.
+              Two sentences carry this house — the dominion mandate we live by
+              every day, and the reigning generation we are becoming. Everything
+              else is details.
             </p>
           </Reveal>
         </div>
@@ -51,14 +52,15 @@ export default function MissionVision() {
             <div className="media-card-body p-7 lg:p-9">
               <p className="eyebrow text-accent mb-3">Our mission — today</p>
               <h3 className="font-serif text-3xl lg:text-4xl font-bold text-white leading-tight mb-3" data-testid="text-mission-title">
-                To evangelize the world, disciple nations.
+                To win souls and disciple nations into dominion.
               </h3>
               <p className="text-white/75 leading-relaxed max-w-lg" data-testid="text-mission-content">
-                To evangelize the world through the power of the Holy Spirit, establishing strong
-                Christian communities that worship God in spirit and truth — demonstrating Christ's
-                love through practical service to humanity.
+                To evangelize the world through the power of the Holy Spirit — raising believers
+                who take dominion in their families, businesses, cities, and nations; establishing
+                strong Christian communities that worship God in spirit and truth and demonstrate
+                Christ's love through practical service to humanity.
               </p>
-              <p className="mt-4 text-xs font-bold uppercase tracking-[0.25em] text-accent/80">Matthew 28:19 · Mark 16:15</p>
+              <p className="mt-4 text-xs font-bold uppercase tracking-[0.25em] text-accent/80">Genesis 1:28 · Mark 16:15</p>
             </div>
           </motion.article>
 
@@ -80,14 +82,14 @@ export default function MissionVision() {
             <div className="relative">
               <p className="eyebrow text-primary/70 mb-3">Our vision — tomorrow</p>
               <h3 className="font-serif text-3xl lg:text-4xl font-bold text-primary leading-tight mb-3" data-testid="text-vision-title">
-                A church in every city. Christ in every home.
+                A generation walking in dominion.
               </h3>
               <p className="text-primary/75 leading-relaxed max-w-lg" data-testid="text-vision-content">
-                To be a thriving, multicultural church community transforming lives across Kenya and
-                East Africa — established churches in every major city and town, training centers,
-                and community programs that reflect God's love and justice.
+                To be a thriving church raising kingdom champions — men and women reigning in life
+                across Kenya and East Africa; churches planted in every city and town, training
+                centers and community programs everywhere, and Christ enthroned in every home.
               </p>
-              <p className="mt-4 text-xs font-bold uppercase tracking-[0.25em] text-primary/60">Habakkuk 2:14 · Acts 1:8</p>
+              <p className="mt-4 text-xs font-bold uppercase tracking-[0.25em] text-primary/60">Romans 5:17 · Revelation 5:10</p>
               <Link
                 href="/about"
                 className="mt-6 inline-flex items-center gap-2 font-bold text-primary hover:gap-3.5 transition-all"

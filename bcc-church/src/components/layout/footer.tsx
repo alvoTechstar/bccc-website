@@ -1,10 +1,8 @@
 import { Link } from "wouter";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
-import { adminEnabled, churchFacebook, youtubeChannelUrl } from "@/lib/site";
+import { churchFacebook, youtubeChannelUrl } from "@/lib/site";
 
 export default function Footer() {
-  // The console lives on its own URL — never link to it from the website.
-  const showAdminLink = adminEnabled();
   return (
     <footer className="bg-primary text-primary-foreground african-pattern">
       <div className="container mx-auto px-4 py-16">
@@ -92,13 +90,6 @@ export default function Footer() {
           <p className="text-gray-300">
             © {new Date().getFullYear()} Beautiful Courts Christian Church. All rights reserved.
           </p>
-            <p className="mt-2">
-              {showAdminLink && (
-                <Link href="/admin/login" className="text-xs text-gray-400/70 hover:text-accent transition-colors" data-testid="link-footer-admin">
-                  Admin sign in
-                </Link>
-              )}
-            </p>
         </div>
       </div>
     </footer>

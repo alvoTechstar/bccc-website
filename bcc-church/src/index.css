@@ -481,3 +481,24 @@
     width: 100%;
   }
 }
+
+/* M-Pesa modal close: navy circular badge floating clear of the header. */
+.mpesa-modal > button:last-child {
+  background-color: #0e2a52;
+  color: #fff;
+  border-radius: 9999px;
+  border: 2px solid #eab308;
+  opacity: 1;
+  top: -12px;
+  right: -12px;
+  padding: 7px;
+  box-shadow: 0 8px 20px rgb(0 0 0 / 0.3);
+}
+.mpesa-modal > button:last-child:hover {
+  background-color: #14365d;
+  opacity: 1;
+}
+.mpesa-modal > button:last-child svg {
+  width: 15px;
+  height: 15px;
+}

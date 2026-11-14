@@ -298,6 +298,7 @@ export interface GivingRecord {
   id: string;
   amount: number | string;
   givingType: string;
+  name?: string | null;
   phoneNumber: string;
   email?: string | null;
   message?: string | null;

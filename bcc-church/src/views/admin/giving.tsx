@@ -33,7 +33,7 @@ export default function AdminGiving() {
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return data.filter((r) => {
-      if (q && !`${r.phoneNumber ?? ""} ${r.givingType ?? ""} ${r.transactionId ?? ""} ${r.email ?? ""}`.toLowerCase().includes(q)) return false;
+      if (q && !`${r.name ?? ""} ${r.phoneNumber ?? ""} ${r.givingType ?? ""} ${r.transactionId ?? ""} ${r.email ?? ""}`.toLowerCase().includes(q)) return false;
       if (filters.status.length > 0 && r.status !== filters.status[0]) return false;
       if (filters.givingType.length > 0 && !filters.givingType.includes(r.givingType)) return false;
       const day = (r.createdAt ?? "").slice(0, 10);
@@ -81,7 +81,7 @@ export default function AdminGiving() {
         }
       >
         <div className="mb-3 flex flex-wrap items-end gap-2">
-          <IciSearchInput value={search} onChange={(v) => { setSearch(v); resetPage(); }} placeholder="Search phone, type, transaction, email…" className="min-w-52 flex-1" />
+          <IciSearchInput value={search} onChange={(v) => { setSearch(v); resetPage(); }} placeholder="Search name, phone, type, transaction, email…" className="min-w-52 flex-1" />
           <FilterInput
             categories={[
               { key: "status", label: "Status", single: true, options: statuses.map((s) => ({ label: s, value: s })) },
@@ -96,6 +96,12 @@ export default function AdminGiving() {
           <IciDataTable
             columns={[
               { key: "date", header: "Date", width: "150px", render: (r) => (r.createdAt ? new Date(r.createdAt).toLocaleString() : "—") },
+              { key: "giver", header: "Giver", render: (r) => (
+                <span>
+                  <span className="block font-semibold">{r.name || "—"}</span>
+                  {r.email && <span className="block truncate text-[11px] font-normal text-slate-500">{r.email}</span>}
+                </span>
+              ) },
               { key: "type", header: "Type", render: (r) => <span className="font-semibold">{r.givingType}</span> },
               { key: "amount", header: "Amount", align: "right", width: "120px", render: (r) => `KES ${Number(r.amount).toLocaleString()}` },
               { key: "phone", header: "Phone", render: (r) => r.phoneNumber },

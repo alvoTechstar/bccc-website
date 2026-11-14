@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import GivingForm from "@/components/giving/giving-form";
+import { Button } from "@/components/ui/button";
+import MpesaModal from "@/components/giving/mpesa-modal";
 import {
+  ArrowRight,
   CreditCard,
   Building,
   Globe,
@@ -18,6 +21,7 @@ import { staggerContainer, staggerDir } from "@/lib/animations";
 // staggerDir(index) cycles left / down / right / scale so cards never enter from one side
 
 export default function Giving() {
+  const [mpesaOpen, setMpesaOpen] = useState(false);
   const givingOptions = [
     {
       icon: Smartphone,
@@ -26,7 +30,8 @@ export default function Giving() {
       payBill: "522522",
       account: "BCC CHURCH",
       color: "bg-green-500",
-      recommended: true
+      recommended: true,
+      action: "mpesa" as const
     },
     {
       icon: Building,
@@ -119,9 +124,18 @@ export default function Giving() {
                 {givingOptions.map((option, index) => (
                   <motion.div key={index} variants={staggerDir(index)}>
                     <article
+                      onClick={() => option.action === "mpesa" && setMpesaOpen(true)}
+                      onKeyDown={(e) => {
+                        if (option.action === "mpesa" && (e.key === "Enter" || e.key === " ")) {
+                          e.preventDefault();
+                          setMpesaOpen(true);
+                        }
+                      }}
+                      role={option.action === "mpesa" ? "button" : undefined}
+                      tabIndex={option.action === "mpesa" ? 0 : undefined}
                       className={`relative overflow-hidden rounded-[1.75rem] bg-primary p-6 shadow-xl ring-1 hover:-translate-y-1 transition-all duration-300 ${
                         option.recommended ? "ring-2 ring-accent" : "ring-white/10 hover:ring-accent/50"
-                      }`}
+                      } ${option.action === "mpesa" ? "cursor-pointer" : ""}`}
                       data-testid={`card-giving-option-${index}`}
                     >
                       <span className="absolute -right-1 -top-3 font-serif text-7xl font-black text-white/[0.07]">
@@ -179,6 +193,12 @@ export default function Giving() {
                           {option.details && typeof option.details === 'string' && (
                             <p className="text-sm text-white/60">{option.details}</p>
                           )}
+
+                          {option.action === "mpesa" && (
+                            <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-xs font-black uppercase tracking-widest text-primary" data-testid="button-give-mpesa">
+                              Tap to give via M-Pesa <ArrowRight size={14} />
+                            </span>
+                          )}
                         </div>
                       </div>
                     </article>
@@ -187,20 +207,48 @@ export default function Giving() {
 
                 <Reveal delay={0.1}>
                   <div className="flex items-center gap-3 rounded-xl bg-green-500/10 border border-green-500/30 px-4 py-3 text-sm text-muted-foreground">
-                    <Banknote className="text-green-600" size={20} />
-                    M-Pesa STK push arrives in seconds — approve on your phone to complete giving.
+                    <Banknote className="text-green-600 shrink-0" size={20} />
+                    Tapping M-Pesa opens a secure checkout — enter your number, approve the prompt, done.
                   </div>
                 </Reveal>
               </motion.div>
 
               {/* Quick Give Form */}
               <Reveal delay={0.12} from="right">
-                <GivingForm />
+                <article className="relative overflow-hidden rounded-[2rem] bg-primary p-7 lg:p-8 shadow-xl ring-1 ring-accent/40 text-center">
+                  <span className="absolute -right-2 -top-4 font-serif text-8xl font-black text-white/[0.07]">04</span>
+                  <motion.div
+                    animate={{ scale: [1, 1.06, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="relative mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-green-500 shadow-lg"
+                  >
+                    <Smartphone className="text-white" size={30} />
+                  </motion.div>
+                  <h3 className="relative font-serif text-2xl font-bold text-white mb-2">
+                    Give in seconds
+                  </h3>
+                  <p className="relative text-white/65 text-[15px] mb-6 max-w-sm mx-auto">
+                    Tap below, enter the amount and your M-Pesa number — approve the STK push on your phone and you're done.
+                  </p>
+                  <Button
+                    size="lg"
+                    onClick={() => setMpesaOpen(true)}
+                    className="btn-shine relative w-full bg-accent text-accent-foreground hover:bg-accent/90 rounded-full font-bold"
+                    data-testid="button-give-mpesa-cta"
+                  >
+                    <Heart className="mr-2" size={18} /> Give with M-Pesa
+                  </Button>
+                  <p className="relative mt-4 text-xs text-white/50">
+                    Prefer till or bank? The details are on the left.
+                  </p>
+                </article>
               </Reveal>
             </div>
           </div>
         </div>
       </section>
+
+      <MpesaModal open={mpesaOpen} onOpenChange={setMpesaOpen} />
 
       {/* Giving Types */}
       <section className="py-20 bg-muted">

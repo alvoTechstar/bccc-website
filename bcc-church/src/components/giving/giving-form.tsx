@@ -1,26 +1,27 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { Heart, Shield } from "lucide-react";
+import { CheckCircle2, Loader2, ShieldCheck, Smartphone, XCircle } from "lucide-react";
 import type { InsertGivingRecord } from "@/lib/schemas";
 import { api, type GivingCreateResponse } from "@/lib/api";
+import { cn } from "@/lib/utils";
+
+const TYPES = ["Tithe", "Offering", "Building Fund", "Mission Support", "Special Project"];
+const QUICK_AMOUNTS = [100, 500, 1000, 5000];
 
 export default function GivingForm() {
   const { toast } = useToast();
   const [formData, setFormData] = useState<InsertGivingRecord>({
     amount: "",
-    givingType: "",
+    givingType: "Tithe",
+    name: "",
     phoneNumber: "",
     email: "",
-    message: ""
+    message: "",
   });
-  const [lastGivingId, setLastGivingId] = useState<string | null>(null);
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
 
   const pollStatus = async (givingId: string) => {
@@ -54,34 +55,33 @@ export default function GivingForm() {
   };
 
   const createGivingRecord = useMutation({
-    // Empty email string -> undefined so the optional backend field stays clean.
     mutationFn: (data: InsertGivingRecord) =>
       api.createGivingRecord({
         ...data,
         email: data.email?.trim() ? data.email.trim() : undefined,
       }),
     onSuccess: (res: GivingCreateResponse) => {
-      setLastGivingId(res.id);
       setPaymentStatus("initiated");
       toast({
-        title: "Giving Submitted",
+        title: "Check your phone",
         description:
           res.instructions ??
-          "You will receive an M-Pesa prompt on your phone shortly.",
+          "Enter your M-Pesa PIN on the prompt to complete giving.",
       });
       setFormData({
         amount: "",
-        givingType: "",
+        givingType: "Tithe",
+        name: "",
         phoneNumber: "",
         email: "",
-        message: ""
+        message: "",
       });
       void pollStatus(res.id);
     },
     onError: (err: Error) => {
       toast({
-        title: "Error",
-        description: err.message || "Failed to process your giving. Please try again.",
+        title: "Could not start payment",
+        description: err.message || "Please check your details and try again.",
         variant: "destructive",
       });
     },
@@ -89,10 +89,10 @@ export default function GivingForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.amount || !formData.givingType || !formData.phoneNumber) {
+    if (!formData.amount || !formData.givingType || !formData.name?.trim() || !formData.phoneNumber) {
       toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
+        title: "Missing details",
+        description: "Name, amount, giving type and M-Pesa number are required.",
         variant: "destructive",
       });
       return;
@@ -100,119 +100,185 @@ export default function GivingForm() {
     createGivingRecord.mutate(formData);
   };
 
-  const handleInputChange = (field: keyof InsertGivingRecord, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+  const set = (field: keyof InsertGivingRecord, value: string) =>
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
+  const amountNum = Number(formData.amount) || 0;
+  const done = paymentStatus === "completed";
+  const failed = paymentStatus === "failed";
+  const waiting = paymentStatus !== null && !done && !failed;
 
   return (
-    <Card className="shadow-xl">
-      <CardContent className="p-8">
-        <h3 className="text-2xl font-bold text-primary mb-6 font-serif" data-testid="text-giving-form-title">Quick Give</h3>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <Label htmlFor="givingType" className="block text-sm font-medium text-primary mb-2">
-              Giving Type *
-            </Label>
-            <Select onValueChange={(value) => handleInputChange("givingType", value)} data-testid="select-giving-type">
-              <SelectTrigger>
-                <SelectValue placeholder="Select giving type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Tithe">Tithe</SelectItem>
-                <SelectItem value="Offering">Offering</SelectItem>
-                <SelectItem value="Building Fund">Building Fund</SelectItem>
-                <SelectItem value="Mission Support">Mission Support</SelectItem>
-                <SelectItem value="Special Project">Special Project</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+    <div>
+      {/* Checkout header — live total */}
+      <div className="flex items-center justify-between gap-3 rounded-2xl bg-gradient-to-r from-primary via-[#1d3a6e] to-royal px-4 py-3 text-white ring-1 ring-white/10">
+        <span className="flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl gold-surface shadow">
+            <Smartphone size={19} className="text-primary" />
+          </span>
+          <span>
+            <span className="block text-sm font-black leading-tight">M-Pesa Checkout</span>
+            <span className="block text-[11px] text-white/70">STK push to your phone</span>
+          </span>
+        </span>
+        <span className="text-right">
+          <span className="block font-serif text-2xl font-black leading-none gold-accent">
+            {amountNum > 0 ? amountNum.toLocaleString() : "—"}
+          </span>
+          <span className="text-[10px] font-bold uppercase tracking-widest text-white/60">KES</span>
+        </span>
+      </div>
 
-          <div>
-            <Label htmlFor="amount" className="block text-sm font-medium text-primary mb-2">
-              Amount (KES) *
-            </Label>
+      <form onSubmit={handleSubmit} className="mt-3 space-y-3">
+        {/* Giving type pills */}
+        <div>
+          <Label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">
+            Giving for
+          </Label>
+          <div className="flex flex-wrap gap-1.5" data-testid="select-giving-type">
+            {TYPES.map((t) => (
+              <button
+                key={t}
+                type="button"
+                onClick={() => set("givingType", t)}
+                className={cn(
+                  "rounded-full border px-3 py-1.5 text-xs font-bold transition",
+                  formData.givingType === t
+                    ? "border-primary bg-primary text-white"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-primary/50"
+                )}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Amount + quick picks */}
+        <div>
+          <Label htmlFor="amount" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">
+            Amount (KES)
+          </Label>
+          <div className="flex gap-1.5">
+            {QUICK_AMOUNTS.map((q) => (
+              <button
+                key={q}
+                type="button"
+                onClick={() => set("amount", String(q))}
+                className={cn(
+                  "flex-1 rounded-lg border px-2 py-2 text-xs font-black transition",
+                  String(q) === String(formData.amount)
+                    ? "border-green-600 bg-green-50 text-green-700"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-green-600/50"
+                )}
+              >
+                {q >= 1000 ? `${q / 1000}K` : q}
+              </button>
+            ))}
             <Input
               id="amount"
               type="number"
-              placeholder="Enter amount"
+              min={1}
+              placeholder="Other"
               value={formData.amount}
-              onChange={(e) => handleInputChange("amount", e.target.value)}
+              onChange={(e) => set("amount", e.target.value)}
               data-testid="input-amount"
+              required
+              className="flex-[1.4]"
+            />
+          </div>
+        </div>
+
+        {/* Name + phone */}
+        <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
+          <div>
+            <Label htmlFor="giverName" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">
+              Full name *
+            </Label>
+            <Input
+              id="giverName"
+              type="text"
+              placeholder="Jane Wanjiku"
+              value={formData.name ?? ""}
+              onChange={(e) => set("name", e.target.value)}
+              data-testid="input-giver-name"
               required
             />
           </div>
-
           <div>
-            <Label htmlFor="phoneNumber" className="block text-sm font-medium text-primary mb-2">
-              Phone Number *
+            <Label htmlFor="phoneNumber" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">
+              M-Pesa number *
             </Label>
             <Input
               id="phoneNumber"
               type="tel"
               placeholder="07XXXXXXXX"
               value={formData.phoneNumber}
-              onChange={(e) => handleInputChange("phoneNumber", e.target.value)}
+              onChange={(e) => set("phoneNumber", e.target.value)}
               data-testid="input-phone"
               required
             />
           </div>
-
-          <div>
-            <Label htmlFor="email" className="block text-sm font-medium text-primary mb-2">
-              Email (Optional — for your receipt)
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={formData.email ?? ""}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              data-testid="input-email"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="message" className="block text-sm font-medium text-primary mb-2">
-              Message (Optional)
-            </Label>
-            <Textarea
-              id="message"
-              placeholder="Special intention or prayer request"
-              rows={3}
-              value={formData.message}
-              onChange={(e) => handleInputChange("message", e.target.value)}
-              data-testid="textarea-message"
-            />
-          </div>
-
-          <Button
-            type="submit"
-            className="w-full bg-accent text-accent-foreground hover:bg-accent/90"
-            disabled={createGivingRecord.isPending}
-            data-testid="button-submit-giving"
-          >
-            <Heart className="mr-2" size={20} />
-            {createGivingRecord.isPending ? "Processing..." : "Give Now via M-Pesa"}
-          </Button>
-
-          {lastGivingId && paymentStatus && (
-            <p
-              className="text-sm text-muted-foreground text-center"
-              data-testid="text-giving-status"
-            >
-              Payment status: <span className="font-semibold">{paymentStatus}</span>
-            </p>
-          )}
-        </form>
-
-        <div className="mt-6 p-4 bg-muted/50 rounded-lg">
-          <p className="text-xs text-muted-foreground text-center flex items-center justify-center">
-            <Shield className="mr-1" size={16} />
-            Your giving is secure and encrypted. You will receive a confirmation SMS.
-          </p>
         </div>
-      </CardContent>
-    </Card>
+
+        <div>
+          <Label htmlFor="email" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">
+            Email <span className="font-medium normal-case text-slate-400">(for your receipt)</span>
+          </Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@example.com"
+            value={formData.email ?? ""}
+            onChange={(e) => set("email", e.target.value)}
+            data-testid="input-email"
+          />
+        </div>
+
+        <Button
+          type="submit"
+          className="h-11 w-full rounded-xl bg-green-600 text-sm font-black text-white hover:bg-green-700"
+          disabled={createGivingRecord.isPending || waiting}
+          data-testid="button-submit-giving"
+        >
+          {createGivingRecord.isPending || waiting ? (
+            <>
+              <Loader2 className="mr-2 animate-spin" size={18} /> Waiting for M-Pesa PIN…
+            </>
+          ) : done ? (
+            <>
+              <CheckCircle2 className="mr-2" size={18} /> Give again
+            </>
+          ) : (
+            <>Give{amountNum > 0 ? ` KES ${amountNum.toLocaleString()}` : ""} via M-Pesa</>
+          )}
+        </Button>
+
+        {paymentStatus && (
+          <p
+            className={cn(
+              "flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-center text-xs font-bold",
+              done && "bg-green-50 text-green-700",
+              failed && "bg-red-50 text-red-600",
+              waiting && "bg-amber-50 text-amber-700"
+            )}
+            data-testid="text-giving-status"
+          >
+            {waiting && <Loader2 size={13} className="animate-spin" />}
+            {done && <CheckCircle2 size={13} />}
+            {failed && <XCircle size={13} />}
+            {done
+              ? "Payment confirmed — receipt on its way."
+              : failed
+                ? "Payment did not complete — try again."
+                : "Approve the prompt on your phone…"}
+          </p>
+        )}
+
+        <p className="flex items-center justify-center gap-1.5 text-center text-[11px] text-slate-400">
+          <ShieldCheck size={13} /> Encrypted STK push · confirmation SMS follows
+        </p>
+      </form>
+    </div>
   );
 }

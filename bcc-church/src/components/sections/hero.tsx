@@ -6,6 +6,7 @@ import { ArrowRight, Heart, MapPin, Radio } from "lucide-react";
 import { Marquee } from "@/components/motion/reveal";
 import { EASE_OUT } from "@/lib/animations";
 import { fallbackPhotos, photos, photoProps } from "@/lib/site";
+import { useLiveBroadcast } from "@/lib/youtube-live";
 
 const container = {
   initial: {},
@@ -29,6 +30,7 @@ const values = [
 ];
 
 export default function Hero() {
+  const { isLive } = useLiveBroadcast();
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
@@ -61,9 +63,19 @@ export default function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" />
             </span>
-            <span className="inline-flex items-center gap-1.5 font-semibold text-white">
-              <Radio size={14} className="text-accent" /> Live every Sunday
-            </span>
+            {isLive ? (
+              <Link
+                href="/sermons"
+                data-testid="link-hero-watch-live-now"
+                className="inline-flex items-center gap-1.5 font-black text-white bg-red-600 rounded-full px-3 py-1 hover:bg-red-500 transition-colors"
+              >
+                <Radio size={14} /> Live now — watch here
+              </Link>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 font-semibold text-white">
+                <Radio size={14} className="text-accent" /> Live every Sunday
+              </span>
+            )}
           </span>
           <span className="hidden sm:inline text-white/30">|</span>
           <span className="inline-flex items-center gap-1.5">
@@ -103,17 +115,17 @@ export default function Hero() {
           <Link href="/contact" className="w-full sm:w-auto">
             <Button
               size="lg"
-              className="btn-shine w-full sm:w-auto justify-center bg-accent text-accent-foreground hover:bg-accent/90 text-base px-9 py-7 rounded-full font-bold"
+              className="btn-shine w-full sm:w-auto justify-center bg-accent text-accent-foreground hover:bg-accent/90 rounded-full font-bold"
               data-testid="button-join-services"
             >
-              Plan Your Visit <ArrowRight className="ml-2" size={20} />
+              Plan Your Visit <ArrowRight className="ml-2" size={18} />
             </Button>
           </Link>
           <Link href="/sermons" className="w-full sm:w-auto">
             <Button
               size="lg"
               variant="outline"
-              className="glass-pill w-full sm:w-auto justify-center text-white hover:bg-white/20 text-base px-9 py-7 rounded-full font-bold border-white/30"
+              className="glass-pill w-full sm:w-auto justify-center text-white hover:bg-white/20 rounded-full font-bold border-white/30"
               data-testid="button-watch-live"
             >
               <span className="mr-2 inline-flex h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse-soft" />
@@ -123,10 +135,10 @@ export default function Hero() {
           <Link href="/giving" className="w-full sm:w-auto sm:hidden">
             <Button
               size="lg"
-              className="w-full justify-center bg-white text-primary hover:bg-white/90 text-base px-9 py-7 rounded-full font-bold"
+              className="w-full justify-center bg-white text-primary hover:bg-white/90 rounded-full font-bold"
               data-testid="button-hero-give"
             >
-              <Heart className="mr-2" size={20} /> Give Now
+              <Heart className="mr-2" size={18} /> Give Now
             </Button>
           </Link>
         </motion.div>

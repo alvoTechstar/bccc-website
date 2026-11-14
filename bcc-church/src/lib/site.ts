@@ -1,8 +1,9 @@
 import type { SyntheticEvent } from "react";
+import { BASE_URL } from "@/utilities/Endpoints";
 
 /**
  * Central site configuration.
- * - API base URL (env override via VITE_API_URL)
+ * - API base URL lives in "@/utilities/Endpoints" (single source of truth)
  * - YouTube sermon videos (paste video IDs from the church channel)
  * - Dominion Summit + theme-of-the-year (set every year at the summit)
  * - Local photo manifest (drop the 6 church photos into src/assets/photos/)
@@ -11,10 +12,7 @@ import type { SyntheticEvent } from "react";
 export const site = {
   name: "BCC Church",
   fullName: "Beautiful Courts Christian Church",
-  apiBase: (
-    (import.meta.env.VITE_API_URL as string | undefined) ??
-    "https://bccc-website-backend.onrender.com"
-  ).replace(/\/$/, ""),
+  apiBase: BASE_URL,
   contact: {
     phone: "+254 720 123 456",
     email: "info@bccchurch.co.ke",
@@ -26,17 +24,27 @@ export const site = {
   ],
 };
 
-/** The Dominion Summit sets the theme for the entire year — update these each December. */
+/** The Dominion Summit sets the theme for the entire year — confirmed from the official poster. */
 export const summit = {
   name: "Dominion Summit",
   edition: 19,
   year: 2026,
-  /** The 2027 theme will be proclaimed at this summit — revealed live, Dec 2026. */
-  yearTheme: "",
+  /** Confirmed theme on the official 2026 poster. */
+  yearTheme: "Growing and Prevailing",
   nextThemeYear: 2027,
-  dates: "7TH–11TH DEC 2026",
+  dates: "7TH–13TH DEC 2026",
+  time: "9:00 AM – 9:00 PM",
   venue: "Mawanga, Kwa Buda Church Headquarters",
-  convenor: "JB. Tajeu",
+  convenor: "Pst. J.B. Tajeu",
+  coConvenor: "Apostle Jesse Karanja",
+  guests: [
+    "Pst. Moses Nyaga",
+    "Rev. Stanley Njoroge",
+    "Rev. Pancras Ngira",
+    "Prophet Saidimu",
+    "Pst. Martha Job",
+  ],
+  contact: "+254 720 266 684",
   poster: "/photos/dominion-summit-2026.jpg",
 };
 
@@ -65,6 +73,35 @@ export const sermonVideos: { id: string; title: string; preacher?: string }[] = 
 
 export const bishopFacebook = "https://www.facebook.com/pstjb.tajeu";
 export const churchFacebook = "https://www.facebook.com/beautifulcourtschristianchurch";
+
+/**
+ * Dedicated admin URL. Set VITE_ADMIN_HOST=admin.bccchurch.co.ke so the
+ * console lives on its own subdomain, away from the public website:
+ * - on that host: only /admin/* works (everything else -> sign-in)
+ * - on every other host: /admin/* is hidden (renders Not Found)
+ * Leave empty (local dev default) and the console works everywhere.
+ */
+export const adminHost = (
+  (import.meta.env.VITE_ADMIN_HOST as string | undefined) ?? ""
+)
+  .trim()
+  .toLowerCase();
+
+export function isAdminHost(host: string = window.location.hostname): boolean {
+  return adminEnabled(host);
+}
+
+/** True when the current host may serve the admin console. */
+export function adminEnabled(host: string = window.location.hostname): boolean {
+  if (!adminHost) return true;
+  return host.toLowerCase() === adminHost;
+}
+
+/** True when the current host may serve the public website. */
+export function publicEnabled(host: string = window.location.hostname): boolean {
+  if (!adminHost) return true;
+  return host.toLowerCase() !== adminHost;
+}
 
 export const youtubeChannelId = "UCX8Az4S9Rq-oVqh_MNUxsuA";
 export const youtubeChannelUrl = `https://www.youtube.com/channel/${youtubeChannelId}`;

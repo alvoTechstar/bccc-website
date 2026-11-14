@@ -14,7 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { ArrowRight, ArrowUpRight, Heart, Globe } from "lucide-react";
 import type { BlogPost } from "@/lib/schemas";
-import { api, Endpoints } from "@/lib/api";
+import { api, Endpoints, resolveUploadUrl } from "@/lib/api";
 import { Reveal, Counter } from "@/components/motion/reveal";
 import { staggerContainer, staggerDir } from "@/lib/animations";
 import { fallbackPhotos, photos, photoProps } from "@/lib/site";
@@ -55,6 +55,7 @@ export default function Home() {
   return (
     <div>
       <Hero />
+      <MissionVision />
       <Summit />
       <SundayStrip />
 
@@ -151,7 +152,6 @@ export default function Home() {
       </section>
 
       <VisionLeader />
-      <MissionVision />
 
       <Sermons />
 
@@ -187,7 +187,7 @@ export default function Home() {
                 </Card>
               ))}
             </div>
-          ) : (
+          ) : blogPosts.length > 0 ? (
             <motion.div
               variants={staggerContainer}
               initial="initial"
@@ -203,7 +203,7 @@ export default function Home() {
                   data-testid={`card-blog-post-${post.id}`}
                 >
                   <img
-                    src={post.imageUrl || 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}
+                    src={resolveUploadUrl(post.images?.[0] ?? post.imageUrl) || 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80'}
                     alt={post.title}
                     loading="lazy"
                     className="absolute inset-0 h-full w-full object-cover"
@@ -225,6 +225,16 @@ export default function Home() {
                 </motion.article>
               ))}
             </motion.div>
+          ) : (
+            <div className="rounded-3xl border border-white/10 bg-white/[0.04] px-6 py-12 text-center">
+              <p className="font-serif text-2xl font-bold text-white">Fresh stories are on the way.</p>
+              <p className="mx-auto mt-2 max-w-md text-white/65">
+                The media team publishes here straight from the admin console — check back soon, or catch up on past sermons.
+              </p>
+              <Link href="/sermons" className="mt-5 inline-flex items-center gap-2 rounded-full bg-accent px-6 py-2.5 text-sm font-bold text-primary hover:bg-accent/90">
+                Watch sermons <ArrowRight size={16} />
+              </Link>
+            </div>
           )}
         </div>
       </section>
@@ -257,14 +267,14 @@ export default function Home() {
             <Reveal from="up" delay={0.18}>
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
                 <Link href="/contact">
-                  <Button size="lg" className="btn-shine bg-accent text-accent-foreground hover:bg-accent/90 rounded-full px-9 py-6 text-base font-bold" data-testid="button-plan-visit">
-                    <Heart className="mr-2" size={20} />
+                  <Button size="lg" className="btn-shine bg-accent text-accent-foreground hover:bg-accent/90 rounded-full font-bold" data-testid="button-plan-visit">
+                    <Heart className="mr-2" size={18} />
                     Plan Your Visit
                   </Button>
                 </Link>
                 <Link href="/giving">
-                  <Button size="lg" variant="outline" className="glass-pill text-white rounded-full px-9 py-6 text-base font-bold border-white/30 hover:bg-white/20" data-testid="button-support-mission">
-                    <Globe className="mr-2" size={20} />
+                  <Button size="lg" variant="outline" className="glass-pill text-white rounded-full font-bold border-white/30 hover:bg-white/20" data-testid="button-support-mission">
+                    <Globe className="mr-2" size={18} />
                     Support Our Mission
                   </Button>
                 </Link>

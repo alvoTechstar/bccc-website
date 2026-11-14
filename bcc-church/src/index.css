@@ -24,6 +24,7 @@
 
   --color-background: #ffffff;
   --color-foreground: #0e2a52;
+  --color-surface: #fafbfd; /* ICI-style app surface */
   --color-card: #ffffff;
   --color-card-foreground: #0e2a52;
   --color-popover: #ffffff;
@@ -54,6 +55,79 @@
 }
 
 /* Light-only theme — dark mode removed by design. */
+
+/* ---------- ICI-inspired base (cleaner tables, labels, focus) ---------- */
+
+.ici-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+  color: var(--color-muted-foreground);
+}
+.ici-label::first-letter {
+  text-transform: uppercase;
+}
+
+.ici-input {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  padding: 0.625rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-foreground);
+  outline: none;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.ici-input::placeholder {
+  color: #94a3b8;
+}
+.ici-input:focus {
+  outline: 1px solid var(--color-ring);
+  outline-offset: 0;
+}
+
+.ici-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+.ici-btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+.ici-btn-primary:hover {
+  opacity: 0.94;
+}
+.ici-btn-secondary {
+  border: 1px solid var(--color-border);
+  background: #fff;
+  color: var(--color-foreground);
+}
+.ici-btn-secondary:hover {
+  background: var(--color-muted);
+}
+
+/* ICI-style section card for public pages */
+.ici-section-card {
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(14 42 82 / 0.05);
+}
+
+/* Tabular numerals inside admin tables + stats */
+.admin-nums {
+  font-variant-numeric: tabular-nums;
+}
 
 /* ---------- Logo-derived utilities ---------- */
 

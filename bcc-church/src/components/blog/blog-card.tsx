@@ -3,10 +3,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, ArrowRight, Facebook } from "lucide-react";
 import type { BlogPost } from "@/lib/schemas";
+import { resolveUploadUrl } from "@/utilities/Endpoints";
 
 interface BlogCardProps {
   post: BlogPost;
   featured?: boolean;
+}
+
+function coverOf(post: BlogPost, fallback: string): string {
+  return resolveUploadUrl(post.images?.[0] ?? post.imageUrl) ?? fallback;
 }
 
 export default function BlogCard({ post, featured = false }: BlogCardProps) {
@@ -25,7 +30,7 @@ export default function BlogCard({ post, featured = false }: BlogCardProps) {
         <div className="grid lg:grid-cols-2 gap-0">
           <div className="relative overflow-hidden">
             <img
-              src={post.imageUrl || 'https://images.unsplash.com/photo-1507692049790-de58290a4334?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=500'}
+              src={coverOf(post, 'https://images.unsplash.com/photo-1507692049790-de58290a4334?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=500')}
               alt={post.title}
               loading="lazy"
               className="w-full h-80 lg:h-full object-cover transition-transform duration-700 group-hover:scale-105"
@@ -95,7 +100,7 @@ export default function BlogCard({ post, featured = false }: BlogCardProps) {
     <Card className="shadow-lg overflow-hidden card-hover group h-full" data-testid={`card-post-${post.id}`}>
       <div className="overflow-hidden">
         <img
-          src={post.imageUrl || 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=300'}
+          src={coverOf(post, 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=300')}
           alt={post.title}
           loading="lazy"
           className="w-full h-48 object-cover transition-transform duration-700 group-hover:scale-110"

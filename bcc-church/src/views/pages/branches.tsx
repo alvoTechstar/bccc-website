@@ -94,7 +94,7 @@ export default function Branches() {
     { name: "BCC Olmokonge", pastor: "Pastor David Seur", congregation: "150+", established: "2016", mapQuery: "2MV2+69X Beautiful Courts Christian Church Olmokonge, Oloshapani" },
     { name: "BCC Enabelbel", pastor: "Pastor David Seur", congregation: "120+", established: "2017", mapQuery: "Enabelbel, Narok, Kenya" },
     { name: "BCC Olomayiana", pastor: "Pastor David Seur", congregation: "180+", established: "2018", mapQuery: "Olomayiana, Narok, Kenya" },
-    { name: "BCC Melele", pastor: "Pastor David Seur", congregation: "140+", established: "2019", mapQuery: "Melele, Narok, Kenya" },
+    { name: "BCC Melelo", pastor: "Pastor David Seur", congregation: "140+", established: "2019", mapQuery: "Melelo, Narok, Kenya" },
     { name: "BCC Olpukoti", pastor: "Pastor David Seur", congregation: "160+", established: "2020", mapQuery: "Olpukoti, Narok, Kenya" }
   ];
 

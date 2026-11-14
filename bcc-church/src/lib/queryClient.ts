@@ -1,12 +1,10 @@
 import { QueryClient } from "@tanstack/react-query";
 import type { QueryFunction } from "@tanstack/react-query";
-import { API_BASE } from "@/lib/api";
+import { buildUrl } from "@/utilities/Endpoints";
 
 function joinUrl(path: string): string {
-  // Allow callers to pass either "/api/..." paths or full URLs.
-  if (/^https?:\/\//i.test(path)) return path;
-  const normalized = path.startsWith("/") ? path : `/${path}`;
-  return `${API_BASE}${normalized}`;
+  // Single base URL lives in "@/utilities/Endpoints" — just delegate.
+  return buildUrl(path);
 }
 
 async function throwIfResNotOk(res: Response) {

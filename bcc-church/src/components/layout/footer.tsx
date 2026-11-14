@@ -1,8 +1,10 @@
 import { Link } from "wouter";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
-import { churchFacebook, summit, youtubeChannelUrl } from "@/lib/site";
+import { adminEnabled, churchFacebook, youtubeChannelUrl } from "@/lib/site";
 
 export default function Footer() {
+  // The console lives on its own URL — never link to it from the website.
+  const showAdminLink = adminEnabled();
   return (
     <footer className="bg-primary text-primary-foreground african-pattern">
       <div className="container mx-auto px-4 py-16">
@@ -18,9 +20,9 @@ export default function Footer() {
                 height={64}
                 loading="lazy"
               />
-              <div>
-                <h3 className="text-2xl font-bold font-serif">BCC Church</h3>
-                <p className="text-accent">Beautiful Courts Christian Church</p>
+              <div className="leading-none">
+                <h3 className="font-serif text-[19px] font-black text-white">Beautiful Courts</h3>
+                <p className="mt-1 text-[10px] font-black uppercase tracking-[0.32em] text-accent">Christian Church</p>
               </div>
             </div>
             <p className="text-gray-300 text-lg leading-relaxed mb-6">
@@ -85,20 +87,18 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Summit banner — 2027 theme unveiled at the summit */}
-        <div className="mt-12 rounded-2xl border border-accent/30 bg-accent/10 px-6 py-4 flex flex-col sm:flex-row items-center justify-center gap-2 text-center">
-          <p className="text-[11px] font-black uppercase tracking-[0.3em] text-accent">
-            {summit.edition}th Annual {summit.name} · {summit.dates}
-          </p>
-          <p className="font-serif text-2xl font-black gold-accent">2027 theme unveiled live</p>
-          <p className="text-xs text-gray-300">{summit.venue}</p>
-        </div>
-
         {/* Footer Bottom */}
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center">
           <p className="text-gray-300">
             © {new Date().getFullYear()} Beautiful Courts Christian Church. All rights reserved.
           </p>
+            <p className="mt-2">
+              {showAdminLink && (
+                <Link href="/admin/login" className="text-xs text-gray-400/70 hover:text-accent transition-colors" data-testid="link-footer-admin">
+                  Admin sign in
+                </Link>
+              )}
+            </p>
         </div>
       </div>
     </footer>

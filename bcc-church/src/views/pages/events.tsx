@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ArrowRight, CalendarDays, Clock, Flame, MapPin, Sparkles } from "lucide-react";
 import { PageHero } from "@/components/motion/page-hero";
 import { Reveal, SectionHeading } from "@/components/motion/reveal";
@@ -9,6 +11,21 @@ import { SummitCountdown } from "@/components/motion/countdown";
 import { staggerContainer, staggerDir } from "@/lib/animations";
 import { DirectionsModal, type Destination } from "@/components/map/directions-modal";
 import { ascend, fallbackPhotos, photos, photoProps, summit } from "@/lib/site";
+import { api, Endpoints, resolveUploadUrl, type ChurchEvent } from "@/lib/api";
+
+function eventDay(iso?: string | null): string {
+  if (!iso) return "—";
+  const d = new Date(`${iso.slice(0, 10)}T00:00`);
+  return Number.isNaN(d.getTime()) ? "—" : String(d.getDate()).padStart(2, "0");
+}
+
+function eventMonth(iso?: string | null): string {
+  if (!iso) return "TBD";
+  const d = new Date(`${iso.slice(0, 10)}T00:00`);
+  return Number.isNaN(d.getTime())
+    ? "TBD"
+    : d.toLocaleString("en-US", { month: "short" }).toUpperCase();
+}
 
 const weekly = [
   { day: "Sunday", what: "First Service", time: "8:30 AM" },
@@ -20,6 +37,13 @@ const weekly = [
 
 export default function Events() {
   const [directionsTo, setDirectionsTo] = useState<Destination>(null);
+
+  // Gatherings posted from Admin → Events (GET live from the backend).
+  const { data: liveEvents = [], isLoading: eventsLoading } = useQuery<ChurchEvent[]>({
+    queryKey: [Endpoints.events],
+    queryFn: api.getEvents,
+  });
+  const publishedEvents = liveEvents.filter((e) => e.published !== false);
 
   return (
     <div>
@@ -42,16 +66,20 @@ export default function Events() {
 
           <div>
             <Reveal from="right">
-              <p className="eyebrow text-accent mb-4">Flagship gathering · {summit.dates}</p>
+              <p className="eyebrow text-accent mb-4">Flagship gathering · {summit.dates} · {summit.time}</p>
               <h2 className="display-section text-primary">
                 {summit.name} <span className="gold-accent">{summit.year}</span>
               </h2>
+              <p className="mt-2 text-xs font-black uppercase tracking-[0.3em] text-accent">
+                Theme: {summit.yearTheme}
+              </p>
             </Reveal>
             <Reveal from="right" delay={0.1}>
               <p className="mt-4 text-lg text-muted-foreground leading-relaxed">
-                Five glorious days at {summit.venue} with convenor{" "}
-                <strong className="text-primary">{summit.convenor}</strong>. The {summit.nextThemeYear}{" "}
-                theme will be proclaimed here — sealed until the summit.
+                Seven glorious days at {summit.venue} with convenor{" "}
+                <strong className="text-primary">{summit.convenor}</strong> and{" "}
+                <strong className="text-primary">{summit.coConvenor}</strong>,{" "}
+                daily {summit.time} — with {summit.guests.join(", ")}.
               </p>
             </Reveal>
 
@@ -149,6 +177,83 @@ export default function Events() {
           </Reveal>
         </div>
       </section>
+
+      {/* More gatherings — posted from Admin → Events */}
+      {(eventsLoading || publishedEvents.length > 0) && (
+        <section className="py-20 lg:py-28 bg-background overflow-hidden">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <SectionHeading
+              eyebrow="More gatherings"
+              title={<>Coming up at <span className="gold-accent">BCC.</span></>}
+              description="Everything the media team posts from the admin console lands here automatically."
+            />
+            {eventsLoading ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="overflow-hidden rounded-3xl border border-slate-200">
+                    <Skeleton className="h-44 w-full" />
+                    <div className="p-5 space-y-2">
+                      <Skeleton className="h-5 w-3/4" />
+                      <Skeleton className="h-4 w-full" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <motion.div
+                variants={staggerContainer}
+                initial="initial"
+                whileInView="animate"
+                viewport={{ once: true, margin: "-60px" }}
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-5"
+              >
+                {publishedEvents.map((e, i) => {
+                  const cover = resolveUploadUrl(e.images?.[0] ?? e.imageUrl);
+                  return (
+                    <motion.article
+                      key={e.id}
+                      variants={staggerDir(i)}
+                      className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-xl"
+                      data-testid={`card-event-${e.id}`}
+                    >
+                      <div className="relative h-44 shrink-0 overflow-hidden bg-gradient-to-br from-primary via-[#1d3a6e] to-royal">
+                        {cover && (
+                          <img
+                            src={cover}
+                            alt={e.title}
+                            loading="lazy"
+                            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        )}
+                        <span className="absolute left-4 top-4 flex min-w-14 flex-col items-center rounded-xl bg-white/95 px-2.5 py-1.5 shadow">
+                          <span className="font-serif text-2xl font-black leading-none text-primary">{eventDay(e.date)}</span>
+                          <span className="text-[10px] font-black uppercase tracking-[0.2em] text-accent">{eventMonth(e.date)}</span>
+                        </span>
+                        {e.category && (
+                          <span className="absolute right-4 top-4 rounded-full bg-accent px-3 py-1 text-[11px] font-black uppercase tracking-widest text-primary">
+                            {e.category}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-1 flex-col p-5">
+                        <h3 className="font-serif text-xl font-bold leading-snug text-slate-800">{e.title}</h3>
+                        <p className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-slate-500">
+                          {e.time && <span className="inline-flex items-center gap-1"><Clock size={13} className="text-accent" /> {e.time}</span>}
+                          {e.venue && <span className="inline-flex items-center gap-1"><MapPin size={13} className="text-accent" /> {e.venue}</span>}
+                        </p>
+                        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-600">{e.description}</p>
+                        <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold text-primary">
+                          <CalendarDays size={15} className="text-accent" /> {e.date?.slice(0, 10)}
+                        </span>
+                      </div>
+                    </motion.article>
+                  );
+                })}
+              </motion.div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Weekly rhythm */}
       <section className="py-20 lg:py-28 bg-muted">

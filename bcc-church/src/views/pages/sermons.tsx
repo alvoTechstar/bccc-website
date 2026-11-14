@@ -13,6 +13,7 @@ import {
   youtubePlaylistEmbed,
   youtubeUploadsPlaylistId,
 } from "@/lib/site";
+import { useLiveBroadcast } from "@/lib/youtube-live";
 
 type FeedVideo = { id: string; title: string; thumb: string; date: string };
 
@@ -69,11 +70,22 @@ export default function Sermons() {
 
   const curated = sermonVideos.find((v) => v.id === active);
   const picked = feed.find((v) => v.id === active);
-  const topTitle = curated?.title ?? picked?.title ?? "Latest from our channel";
-  const topSub = curated?.preacher ?? (picked ? "From our YouTube channel" : "Auto-updated — newest uploads play first");
-  const topSrc = active
-    ? `https://www.youtube.com/embed/${active}?rel=0`
-    : youtubePlaylistEmbed;
+  // While the channel is live, the live stream takes the featured spot
+  // (until the visitor picks another video) — it plays right here.
+  const { isLive, videoId: liveVideoId, title: liveTitle, embedUrl: liveEmbedUrl } =
+    useLiveBroadcast();
+  const showingLive = isLive && !active && liveVideoId && liveEmbedUrl;
+  const topTitle = showingLive
+    ? (liveTitle ?? "Live service")
+    : (curated?.title ?? picked?.title ?? "Latest from our channel");
+  const topSub = showingLive
+    ? "Streaming live now — right here on our website"
+    : (curated?.preacher ?? (picked ? "From our YouTube channel" : "Auto-updated — newest uploads play first"));
+  const topSrc = showingLive
+    ? liveEmbedUrl
+    : active
+      ? `https://www.youtube.com/embed/${active}?rel=0`
+      : youtubePlaylistEmbed;
 
   const choose = (id: string) => {
     setActive(id);
@@ -105,7 +117,19 @@ export default function Sermons() {
         </div>
         <div className="relative container mx-auto px-4 max-w-5xl">
           <Reveal from="scale">
-            <div className="overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/20">
+            <div className="relative overflow-hidden rounded-3xl shadow-2xl ring-1 ring-white/20">
+              {showingLive && (
+                <span
+                  className="absolute left-4 top-4 z-10 inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-1.5 text-xs font-black uppercase tracking-[0.2em] text-white shadow-xl"
+                  data-testid="badge-live-now"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+                  </span>
+                  Live now
+                </span>
+              )}
               <div className="aspect-video w-full bg-black">
                 <iframe
                   key={topSrc}

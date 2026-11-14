@@ -14,6 +14,7 @@ export const blogPostSchema = z.object({
   category: z.string(),
   author: z.string(),
   imageUrl: z.string().optional(),
+  images: z.array(z.string()).optional(),
   published: z.boolean().default(true),
   // Origin: "local" (in-house) or "facebook" (synced from the church page).
   source: z.string().optional(),

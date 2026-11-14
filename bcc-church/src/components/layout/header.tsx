@@ -2,17 +2,19 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { AnimatePresence, motion, useScroll, useSpring } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen, ChevronDown, Church, Heart, MapPin, Menu, Users, X } from "lucide-react";
+import { ArrowRight, BookOpen, ChevronDown, Church, Compass, Heart, MapPin, Menu, Users, X } from "lucide-react";
+import LiveBanner from "@/components/live/live-banner";
 
 export const aboutSubItems = [
   { label: "About the Church", desc: "Our story, values & impact", path: "/about", icon: Church },
+  { label: "Mission & Vision", desc: "Why we exist — see it up top", path: "/#mission-vision", icon: Compass },
   { label: "Leadership", desc: "Bishop JB Tajeu & pastors", path: "/about/leadership", icon: Users },
   { label: "What We Believe", desc: "Our statement of faith", path: "/about/beliefs", icon: BookOpen },
   { label: "Our Branches", desc: "Nakuru & Narok locations", path: "/branches", icon: MapPin },
 ];
 
 export default function Header() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
@@ -59,8 +61,31 @@ export default function Header() {
   const isAboutActive =
     location === "/about" || location.startsWith("/about/") || location.startsWith("/branches");
 
+  /** Jump to the Mission & Vision section at the top of the home page. */
+  const goToMissionVision = () => {
+    setIsMenuOpen(false);
+    setAboutOpen(false);
+    setMobileAboutOpen(false);
+    const scroll = () => {
+      requestAnimationFrame(() => {
+        document
+          .getElementById("mission-vision")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    };
+    if (location !== "/") {
+      navigate("/");
+      // Wait for the home page transition to render before scrolling.
+      setTimeout(scroll, 500);
+    } else {
+      scroll();
+    }
+  };
+
   return (
     <>
+      {/* Live-now notice — visible on every page while the channel is live */}
+      <LiveBanner />
       {/* Main nav */}
       <motion.header
         initial={{ y: -80, opacity: 0 }}
@@ -78,7 +103,7 @@ export default function Header() {
           className="absolute inset-x-0 top-0 h-[3px] origin-left gold-surface"
         />
         <div className="container mx-auto px-4">
-          <div className={`flex items-center justify-between gap-4 transition-all duration-300 ${isScrolled ? "py-2" : "py-3.5"}`}>
+          <div className={`flex items-center justify-between gap-4 transition-all duration-300 ${isScrolled ? "py-2" : "py-3"}`}>
             <Link href="/" data-testid="link-home-logo">
               <motion.div
                 whileHover={{ scale: 1.03 }}
@@ -106,7 +131,7 @@ export default function Header() {
             </Link>
 
             {/* Desktop nav — pill container */}
-            <nav className="hidden lg:flex items-center gap-1 rounded-full border border-white/15 bg-white/[0.07] px-2 py-1.5 backdrop-blur" aria-label="Primary">
+            <nav className="hidden lg:flex items-center gap-0.5 rounded-[10px] border border-white/15 bg-white/[0.07] px-1.5 py-1 backdrop-blur" aria-label="Primary">
               <Link href="/" data-testid="link-nav-home">
                 <span
                   className={`nav-link relative rounded-full px-4 py-2 text-sm font-semibold ${
@@ -168,6 +193,21 @@ export default function Header() {
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.04 * i, duration: 0.22 }}
                               >
+                                {sub.path.includes("#") ? (
+                                  <button
+                                    onClick={goToMissionVision}
+                                    data-testid={`link-nav-${sub.label.toLowerCase().replace(/\s+/g, "-")}`}
+                                    className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left transition-colors hover:bg-white/10"
+                                  >
+                                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-accent/15 text-accent">
+                                      <sub.icon size={18} />
+                                    </span>
+                                    <span>
+                                      <span className="block text-sm font-bold text-white">{sub.label}</span>
+                                      <span className="block text-xs text-primary-foreground/60">{sub.desc}</span>
+                                    </span>
+                                  </button>
+                                ) : (
                                 <Link href={sub.path} data-testid={`link-nav-${sub.label.toLowerCase().replace(/\s+/g, "-")}`}>
                                   <span
                                     className={`flex items-center gap-3 rounded-xl px-4 py-3 transition-colors ${
@@ -185,6 +225,7 @@ export default function Header() {
                                     </span>
                                   </span>
                                 </Link>
+                                )}
                               </motion.div>
                             ))}
                           </div>
@@ -215,7 +256,7 @@ export default function Header() {
 
             <div className="hidden lg:flex items-center gap-3">
               <Link href="/giving">
-                <Button className="btn-shine rounded-full bg-accent px-6 font-bold text-accent-foreground hover:bg-accent/90" data-testid="button-header-give">
+                <Button className="btn-shine rounded-[10px] bg-accent px-6 font-semibold text-accent-foreground hover:bg-accent/90" data-testid="button-header-give">
                   Give Now <ArrowRight size={16} className="ml-1" />
                 </Button>
               </Link>
@@ -326,7 +367,20 @@ export default function Header() {
                                 className="overflow-hidden"
                               >
                                 <div className="space-y-1 px-2 pb-3">
-                                  {item.children.map((sub) => (
+                                  {item.children.map((sub) =>
+                                    sub.path.includes("#") ? (
+                                      <button
+                                        key={sub.path}
+                                        onClick={goToMissionVision}
+                                        data-testid={`link-mobile-nav-${sub.label.toLowerCase().replace(/\s+/g, "-")}`}
+                                        className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-primary-foreground hover:bg-white/10 transition-colors"
+                                      >
+                                        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/15 text-accent">
+                                          <sub.icon size={16} />
+                                        </span>
+                                        <span className="text-[15px] font-bold">{sub.label}</span>
+                                      </button>
+                                    ) : (
                                     <Link key={sub.path} href={sub.path} data-testid={`link-mobile-nav-${sub.label.toLowerCase().replace(/\s+/g, "-")}`}>
                                       <span className="flex items-center gap-3 rounded-xl px-4 py-3 text-primary-foreground hover:bg-white/10 transition-colors">
                                         <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent/15 text-accent">
@@ -335,7 +389,8 @@ export default function Header() {
                                         <span className="text-[15px] font-bold">{sub.label}</span>
                                       </span>
                                     </Link>
-                                  ))}
+                                    )
+                                  )}
                                 </div>
                               </motion.div>
                             )}
@@ -358,33 +413,6 @@ export default function Header() {
                     </motion.div>
                   ))}
                 </div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.35 }}
-                  className="mt-6 rounded-2xl border border-accent/30 bg-accent/10 p-5"
-                >
-                  <p className="text-sm font-bold uppercase tracking-widest text-accent">Sundays</p>
-                  <p className="mt-1 font-serif text-xl font-bold">8:30 & 10:30</p>
-                  <p className="text-sm text-primary-foreground/70">Nakuru · Narok · Online</p>
-                  <Link href="/giving">
-                    <Button
-                      className="btn-shine mt-4 w-full rounded-full bg-accent font-bold text-accent-foreground hover:bg-accent/90"
-                      data-testid="button-mobile-nav-give"
-                    >
-                      <Heart size={16} className="mr-1" /> Give Now
-                    </Button>
-                  </Link>
-                  <Link href="/contact">
-                    <Button
-                      variant="outline"
-                      className="mt-2.5 w-full rounded-full border-white/25 text-white hover:bg-white/10 hover:text-accent"
-                    >
-                      Plan Your Visit <ArrowRight size={16} className="ml-1" />
-                    </Button>
-                  </Link>
-                </motion.div>
               </nav>
 
               <p className="px-6 pb-6 text-xs text-primary-foreground/50">

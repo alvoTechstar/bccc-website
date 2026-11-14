@@ -23,22 +23,26 @@ export default function Summit() {
       </div>
 
       <div className="relative container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
-        {/* Poster */}
+        {/* Poster — confirmed official flyer */}
         <Reveal from="left">
           <motion.figure
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, margin: "-80px" }}
             transition={{ duration: 0.7 }}
+            className="relative"
           >
+            <span className="absolute left-4 top-4 z-[2] rounded-full bg-accent px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.22em] text-primary shadow-xl">
+              Confirmed · {summit.yearTheme}
+            </span>
             <img
-              {...photoProps(photos.summitPoster, fallbackPhotos.summitPoster, `${summit.name} ${summit.year} poster`)}
+              {...photoProps(photos.summitPoster, fallbackPhotos.summitPoster, `${summit.name} ${summit.year} — ${summit.yearTheme} poster`)}
               loading="lazy"
               className="w-full h-auto rounded-xl shadow-2xl ring-1 ring-accent/40"
               data-testid="img-summit-poster"
             />
             <figcaption className="mt-3 text-center text-[11px] font-black uppercase tracking-[0.28em] text-accent">
-              {summit.edition}th Annual Convention · {summit.dates}
+              {summit.edition}th Annual Convention · {summit.dates} · {summit.time}
             </figcaption>
           </motion.figure>
         </Reveal>
@@ -53,18 +57,29 @@ export default function Summit() {
           </Reveal>
           <Reveal from="right" delay={0.1}>
             <p className="mt-4 text-lg text-white/75 leading-relaxed max-w-xl">
-              Five glorious days at {summit.venue} with convenor{" "}
-              <span className="font-bold text-white">{summit.convenor}</span>. The word
-              released at the summit becomes our theme for the entire year —
+              Seven glorious days at {summit.venue} with convenor{" "}
+              <span className="font-bold text-white">{summit.convenor}</span> and{" "}
+              <span className="font-bold text-white">{summit.coConvenor}</span>, daily{" "}
+              {summit.time}. Come expectant — come prevailing.
             </p>
           </Reveal>
           <Reveal from="scale" delay={0.16}>
-            <p className="mt-5 font-serif text-5xl lg:text-6xl font-black gold-accent">
-              {summit.nextThemeYear} theme
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-accent">
+              Confirmed {summit.year} theme
             </p>
-            <p className="mt-2 text-xs font-bold uppercase tracking-[0.3em] text-white/60">
-              Sealed until the summit — unveiled live, {summit.dates}
+            <p className="mt-2 font-serif text-5xl lg:text-6xl font-black gold-accent uppercase leading-[1.02]">
+              Growing <span className="text-white">and</span> Prevailing
             </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[summit.convenor, summit.coConvenor, ...summit.guests].map((m) => (
+                <span
+                  key={m}
+                  className="rounded-full border border-accent/40 bg-accent/10 px-3.5 py-1.5 text-xs font-bold text-white/90"
+                >
+                  {m}
+                </span>
+              ))}
+            </div>
           </Reveal>
           <Reveal from="up" delay={0.2}>
             <div className="mt-6">
@@ -81,6 +96,9 @@ export default function Summit() {
               </span>
               <span className="inline-flex items-center gap-2">
                 <Mic size={17} className="text-accent" /> Convenor {summit.convenor}
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <Mic size={17} className="text-accent" /> {summit.time} daily
               </span>
             </div>
           </Reveal>

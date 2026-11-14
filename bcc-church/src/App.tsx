@@ -1,28 +1,69 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, Redirect, useLocation } from "wouter";
 import { AnimatePresence, motion } from "framer-motion";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "./components/ui/toaster";
 import { TooltipProvider } from "./components/ui/tooltip";
-import NotFound from "./pages/not-found";
-import Home from "./pages/home";
-import About from "./pages/about";
-import Leadership from "./pages/leadership";
-import Beliefs from "./pages/beliefs";
-import Ministries from "./pages/ministries";
-import Branches from "./pages/branches";
-import Blog from "./pages/blog";
-import Sermons from "./pages/sermons";
-import Events from "./pages/events";
-import Giving from "./pages/giving";
-import Contact from "./pages/contact";
+import NotFound from "./views/pages/not-found";
+import Home from "./views/pages/home";
+import About from "./views/pages/about";
+import Leadership from "./views/pages/leadership";
+import Beliefs from "./views/pages/beliefs";
+import Ministries from "./views/pages/ministries";
+import Branches from "./views/pages/branches";
+import Blog from "./views/pages/blog";
+import Sermons from "./views/pages/sermons";
+import Events from "./views/pages/events";
+import Giving from "./views/pages/giving";
+import Contact from "./views/pages/contact";
 import Header from "./components/layout/header";
 import Footer from "./components/layout/footer";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { EASE_OUT } from "./lib/animations";
+import { adminEnabled, publicEnabled } from "./lib/site";
+
+// Lazy-load the admin console (recharts + tables) so public pages stay light.
+const AdminLogin = lazy(() => import("./views/auth/login"));
+const AdminForgotPassword = lazy(() => import("./views/auth/forgot-password"));
+const AdminSetPassword = lazy(() => import("./views/auth/set-password"));
+const AdminLayout = lazy(() => import("./views/admin/layout"));
+
+function AdminFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-slate-100">
+      <p className="text-sm font-semibold text-slate-500">Loading admin…</p>
+    </div>
+  );
+}
 
 function AnimatedRouter() {
   const [location] = useLocation();
+  const hostAllowedAdmin = adminEnabled();
+  const hostAllowedPublic = publicEnabled();
+  const isAdmin = location.startsWith("/admin");
+  if (isAdmin) {
+    // Dedicated admin URL: the console only exists on its own host.
+    if (!hostAllowedAdmin) {
+      return <NotFound />;
+    }
+    return (
+      <Suspense fallback={<AdminFallback />}>
+        <Switch>
+          <Route path="/admin/login" component={AdminLogin} />
+          <Route path="/admin/forgot-password" component={AdminForgotPassword} />
+          <Route path="/admin/set-password" component={AdminSetPassword} />
+          <Route path="/admin/:rest*" component={AdminLayout} />
+          <Route path="/admin" component={AdminLayout} />
+          <Route component={NotFound} />
+        </Switch>
+      </Suspense>
+    );
+  }
+  // On the dedicated admin host there is no public website — send all
+  // visitors straight to the sign-in page.
+  if (!hostAllowedPublic) {
+    return <Redirect to="/admin/login" />;
+  }
   return (
     <AnimatePresence mode="wait">
       <motion.div
@@ -94,19 +135,37 @@ function ScrollToTop() {
   );
 }
 
+function AppShell() {
+  const [location] = useLocation();
+  const isAdmin = location.startsWith("/admin");
+  // On the dedicated admin host there is no public chrome at all.
+  if (isAdmin || !publicEnabled()) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <main className="flex-1">
+          <AnimatedRouter />
+        </main>
+        <Toaster />
+      </div>
+    );
+  }
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1">
+        <AnimatedRouter />
+      </main>
+      <Footer />
+      <ScrollToTop />
+    </div>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <div className="min-h-screen flex flex-col">
-          <Header />
-          <main className="flex-1">
-            <AnimatedRouter />
-          </main>
-          <Footer />
-          <ScrollToTop />
-        </div>
-        <Toaster />
+        <AppShell />
       </TooltipProvider>
     </QueryClientProvider>
   );

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { Card, CardContent } from "../components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Pill, Users, Globe, ArrowRight } from "lucide-react";
 import { PageHero } from "@/components/motion/page-hero";
 import { Reveal, SectionHeading, Counter } from "@/components/motion/reveal";

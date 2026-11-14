@@ -6,7 +6,7 @@ import { fallbackPhotos, photos, photoProps } from "@/lib/site";
 
 export default function MissionVision() {
   return (
-    <section className="relative py-20 lg:py-28 bg-primary overflow-hidden african-pattern">
+    <section id="mission-vision" className="relative py-20 lg:py-28 bg-primary overflow-hidden african-pattern scroll-mt-20">
       <div aria-hidden className="pointer-events-none absolute inset-0">
         <div className="animate-blob absolute top-0 left-1/4 h-80 w-80 rounded-full bg-royal/50 blur-3xl" />
         <div className="animate-blob absolute bottom-0 right-1/4 h-80 w-80 rounded-full bg-accent/20 blur-3xl" style={{ animationDelay: "-6s" }} />
